@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Knight Fintech · EWS Risk Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F4F6FA;--panel:#FFFFFF;--hi:#F0F4FC;--hi2:#E8EEF8;
+  --border:#DDE3EE;--borderB:#C4CEDF;
+  --gold:#E8920A;--goldL:#F5A520;--goldD:#FEF3E2;
+  --red:#D63B3B;--redD:#FEF0F0;
+  --amber:#D07A10;--amberD:#FEF5E6;
+  --green:#1A9A5C;--greenD:#EDF8F2;
+  --blue:#2563EB;--blueD:#EFF4FF;
+  --purple:#6044CC;--purpleD:#F2EFFF;
+  --teal:#0E8A78;--tealD:#EDF8F6;
+  --navy:#0F2952;
+  --slate:#5A6E8A;--muted:#94A3BC;--white:#1A2540;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',system-ui,sans-serif;
+}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--borderB);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulseG{0%{box-shadow:0 0 0 0 rgba(26,154,92,.3)}70%{box-shadow:0 0 0 7px rgba(26,154,92,0)}100%{box-shadow:0 0 0 0 rgba(26,154,92,0)}}
+.fa{animation:fadeUp .4s ease both}
+.si{animation:slideIn .35s ease both}
+.dot-g{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulseG 2s infinite}
+.topbar{background:#FFFFFF;border-bottom:2px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(15,41,82,.07);gap:0}
+.logo-icon{width:34px;height:34px;border-radius:8px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
+.tab-btn{background:transparent;color:var(--slate);border:none;border-bottom:2px solid transparent;padding:0 14px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;height:54px;margin-bottom:-2px}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:700}
+.sctab.active{background:var(--navy)!important;color:#fff!important;}
+.sctab:hover:not(.active){background:var(--hi2)!important;}
+.tab-btn:hover:not(.active){color:var(--navy)}
+.b-bar{background:#FFFFFF;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:10px}
+.b-card{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;text-align:left;transition:all .2s;font-family:var(--sans)}
+.b-card.active{background:#FFFFFF;border-color:var(--gold);box-shadow:0 2px 10px rgba(232,146,10,.14)}
+.b-card:hover:not(.active){background:#FFFFFF;border-color:var(--borderB)}
+.content{max-width:1440px;margin:0 auto;padding:20px 24px}
+.card{background:#FFFFFF;border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(15,41,82,.06)}
+.card0{background:#FFFFFF;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(15,41,82,.06)}
+.pill{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 7px;border:1px solid;display:inline-block;white-space:nowrap}
+.pg{background:var(--greenD);color:var(--green);border-color:#1A9A5C22}
+.pa{background:var(--amberD);color:var(--amber);border-color:#D07A1022}
+.pr{background:var(--redD);color:var(--red);border-color:#D63B3B22}
+.pb{background:var(--blueD);color:var(--blue);border-color:#2563EB22}
+.pp{background:var(--purpleD);color:var(--purple);border-color:#6044CC22}
+.pt{background:var(--tealD);color:var(--teal);border-color:#0E8A7822}
+.pgo{background:var(--goldD);color:var(--gold);border-color:#E8920A22}
+.lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-weight:600}
+.mono{font-family:var(--mono)}
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.agent-card{border-radius:10px;padding:13px 14px;cursor:pointer;transition:all .2s;border:1px solid;position:relative;background:#FFFFFF}
+.agent-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,41,82,.1)}
+.drill-wrap{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+.drill-left{display:flex;flex-direction:column;gap:8px}
+.drill-panel{background:#FFFFFF;border:1px solid var(--borderB);border-radius:12px;overflow:hidden;animation:slideIn .35s ease both;box-shadow:0 2px 12px rgba(15,41,82,.08)}
+.drill-header{padding:14px 16px;border-bottom:1px solid var(--border);background:#FFFFFF}
+.cat-section{border-bottom:1px solid var(--border)}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;transition:background .15s;user-select:none;background:#FFFFFF}
+.cat-header:hover{background:var(--hi)}
+.cat-body{padding:12px 16px 16px;background:var(--bg)}
+.feat-row{margin-bottom:12px}
+.feat-name{font-size:11px;color:var(--navy);font-weight:600;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.feat-val{font-size:12px;font-family:var(--mono);font-weight:700}
+.iqr-track{height:8px;background:var(--hi2);border-radius:4px;position:relative;margin-top:4px;margin-bottom:2px;border:1px solid var(--border)}
+.iqr-zone{position:absolute;top:0;bottom:0;border-radius:3px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.18)}
+.iqr-marker{position:absolute;top:-4px;width:3px;height:16px;border-radius:2px;transform:translateX(-50%)}
+.iqr-tick{position:absolute;top:100%;margin-top:3px;transform:translateX(-50%);font-size:8px;color:var(--muted);font-family:var(--mono);white-space:nowrap}
+.rule-card{border-radius:8px;padding:11px 13px;margin-bottom:8px;border:1px solid;transition:all .3s}
+.rule-triggered{background:var(--greenD);border-color:#1A9A5C33}
+.rule-fired{background:var(--redD);border-color:#D63B3B33}
+.rule-neutral{background:var(--bg);border-color:var(--border)}
+.news-cat{background:var(--bg);border-radius:8px;padding:11px 13px;margin-bottom:8px;border:1px solid var(--border)}
+.news-sent-bar{height:5px;background:var(--hi2);border-radius:3px;margin-top:6px;overflow:hidden}
+.sub-tab-row{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border)}
+.sub-tab{background:transparent;color:var(--slate);border:none;border-bottom:2px solid transparent;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;margin-bottom:-2px}
+.sub-tab.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:700}
+.sub-tab:hover:not(.active){color:var(--navy)}
+.screen{display:none}.screen.active{display:block}
+.kpi-tile{flex:1;background:#FFFFFF;border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(15,41,82,.05)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead th{padding:9px 14px;text-align:left;font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+tbody tr:hover{background:var(--hi)}
+tbody td{padding:9px 14px;color:var(--white)}
+.shap-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.cat-toggle{font-size:10px;color:var(--muted);transition:transform .2s}
+.drill-panel::-webkit-scrollbar{width:3px}
+.drill-panel::-webkit-scrollbar-thumb{background:var(--borderB)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px;margin-right:28px;flex-shrink:0">
+    <div class="logo-icon">K</div>
+    <div>
+      <div style="font-size:13.5px;font-weight:800;color:var(--navy);letter-spacing:-.02em">Knight Fintech</div>
+      <div style="font-size:8px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-weight:700">EWS · Predictive Risk</div>
+    </div>
+  </div>
+  <div style="width:1px;height:20px;background:var(--border);margin-right:16px"></div>
+  <div style="display:flex;gap:0">
+    <button class="tab-btn active" onclick="switchMain('borrower',this)">🔍 Borrower Risk</button>
+    <button class="tab-btn" onclick="switchMain('portfolio',this)">📊 Portfolio Analytics</button>
+    <button class="tab-btn" onclick="switchMain('drift',this)">📋 Validation &amp; Governance</button>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center" id="top-right">
+    <span class="pill pa">AUC 0.84 ↓</span>
+    <span class="dot-g"></span>
+    <span style="font-size:10px;color:var(--muted)">Live · 06:30 AM</span>
+  </div>
+</div>
+
+<!-- BORROWER BAR -->
+<div class="b-bar" id="b-bar">
+  <button class="b-card active" onclick="selectBorrower(0,this)">
+    <div style="display:flex;justify-content:space-between"><div><div style="font-size:11px;font-weight:700">Sunrise Textiles Pvt Ltd</div><div style="font-size:9px;color:var(--muted);margin-top:2px">BL-7842 · Manufacturing · ₹2.8 Cr</div></div><div style="text-align:right"><div style="font-size:19px;font-weight:900;color:var(--amber);font-family:var(--mono)">67</div><div style="font-size:8.5px;font-weight:800;color:var(--amber)">WATCH</div></div></div>
+  </button>
+  <button class="b-card" onclick="selectBorrower(1,this)">
+    <div style="display:flex;justify-content:space-between"><div><div style="font-size:11px;font-weight:700">Apex Pharma Components Ltd</div><div style="font-size:9px;color:var(--muted);margin-top:2px">BL-4419 · Pharma · ₹7.4 Cr</div></div><div style="text-align:right"><div style="font-size:19px;font-weight:900;color:var(--red);font-family:var(--mono)">83</div><div style="font-size:8.5px;font-weight:800;color:var(--red)">HIGH</div></div></div>
+  </button>
+  <button class="b-card" onclick="selectBorrower(2,this)">
+    <div style="display:flex;justify-content:space-between"><div><div style="font-size:11px;font-weight:700">GreenFields Agro Exports</div><div style="font-size:9px;color:var(--muted);margin-top:2px">BL-2931 · Agri &amp; Food · ₹1.2 Cr</div></div><div style="text-align:right"><div style="font-size:19px;font-weight:900;color:var(--green);font-family:var(--mono)">28</div><div style="font-size:8.5px;font-weight:800;color:var(--green)">LOW</div></div></div>
+  </button>
+</div>
+
+<div class="content">
+
+<!-- ══ BORROWER SCREEN ══ -->
+<div class="screen active" id="screen-borrower">
+  <div id="b-header" class="card fa" style="margin-bottom:14px;padding:13px 18px"></div>
+  <div id="score-history-wrap" style="margin-bottom:14px"></div>
+  <div class="sub-tab-row">
+    <button class="sub-tab active" onclick="switchSub('agents',this)">Multi-Agent View</button>
+    <button class="sub-tab" onclick="switchSub('shap',this)">Score Explainability</button>
+  </div>
+  <div class="screen active" id="sub-agents"><div id="agents-wrap"></div></div>
+  <div class="screen" id="sub-shap"><div id="shap-wrap"></div></div>
+</div>
+
+<!-- ══ PORTFOLIO SCREEN ══ -->
+<div class="screen" id="screen-portfolio">
+  <!-- Filter bar -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <span style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em">Filter</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="font-size:9.5px;color:var(--muted)">Portfolio</span>
+      <select id="pf-filter-portfolio" onchange="renderPortfolio()" style="font-size:10px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--navy);font-family:var(--sans);background:#fff">
+        <option value="all">All Portfolios</option>
+        <option value="msme_term">MSME Term Loan</option>
+        <option value="wc_od">Working Capital OD</option>
+        <option value="kisan">Kisan / Agri</option>
+        <option value="corporate">Corporate</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="font-size:9.5px;color:var(--muted)">Industry</span>
+      <select id="pf-filter-industry" onchange="renderPortfolio()" style="font-size:10px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--navy);font-family:var(--sans);background:#fff">
+        <option value="all">All Industries</option>
+        <option value="manufacturing">Manufacturing</option>
+        <option value="pharma">Pharma & Chemicals</option>
+        <option value="agri">Agriculture & Food</option>
+        <option value="construction">Construction</option>
+        <option value="transport">Transport & Logistics</option>
+        <option value="retail">Retail & Trade</option>
+        <option value="textile">Textile</option>
+        <option value="infra">Infrastructure</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="font-size:9.5px;color:var(--muted)">Risk Grade</span>
+      <select id="pf-filter-grade" onchange="renderPortfolio()" style="font-size:10px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--navy);font-family:var(--sans);background:#fff">
+        <option value="all">All Grades</option>
+        <option value="healthy">Healthy</option>
+        <option value="watch">Watch</option>
+        <option value="high">High Risk</option>
+      </select>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+      <span id="pf-count" style="font-size:9.5px;color:var(--muted)">Showing all 2,847 accounts</span>
+      <button onclick="resetPortfolioFilters()" style="font-size:9px;border:1px solid var(--border);border-radius:5px;padding:3px 8px;background:var(--hi);color:var(--slate);cursor:pointer;font-family:var(--sans)">Reset</button>
+    </div>
+  </div>
+  <div id="portfolio-body"></div>
+</div>
+
+<!-- ══ VALIDATION & GOVERNANCE SCREEN ══ -->
+<div class="screen" id="screen-drift">
+  <div id="drift-body"></div>
+</div>
+
+</div><!-- content -->
+
+<script>
+// ══════════════════════════════════════════
+// COLORS
+// ══════════════════════════════════════════
+const C={gold:'#E8920A',goldL:'#F5A520',navy:'#0F2952',red:'#D63B3B',amber:'#D07A10',green:'#1A9A5C',blue:'#2563EB',purple:'#6044CC',teal:'#0E8A78',slate:'#5A6E8A',muted:'#94A3BC',white:'#1A2540',hi:'#F0F4FC',hi2:'#E8EEF8',panel:'#FFFFFF',border:'#DDE3EE',borderB:'#C4CEDF',redD:'#FEF0F0',amberD:'#FEF5E6',greenD:'#EDF8F2',blueD:'#EFF4FF',purpleD:'#F2EFFF',tealD:'#EDF8F6',goldD:'#FEF3E2'};
+const rC=s=>s<=30?C.red:s<=60?C.amber:C.green;
+const rL=s=>s<=30?'HIGH RISK':s<=60?'WATCH':'HEALTHY';
+const rD=s=>s<=30?C.redD:s<=60?C.amberD:C.greenD;
+const rPill=s=>s<=30?'pr':s<=60?'pa':'pg';
+const sC=r=>r==='high'?C.red:r==='med'?C.amber:C.green;
+const sI=r=>r==='ok'?'✓':r==='med'?'⚠':'⛔';
+
+// ══════════════════════════════════════════
+// FEATURE DEFINITIONS PER AGENT
+// ══════════════════════════════════════════
+const AGENT_DEFS = {
+  financial:{
+    icon:'💳', name:'Financial Agent', color:C.blue, colorD:C.blueD,
+    modelType:'Supervised ML · XGBoost / Random Forest / LSTM',
+    approach:'supervised',
+    description:'Trained on external ratings (CRISIL/CARE/ICRA) and CIBIL default labels. Three sub-models: Standalone Financials (absolute ratios), Financial Performance (YoY trends), and Peer Comparison (company minus sector median) — combined into a single financial PD.',
+    categories:[
+      {name:'Standalone Financials', key:'standalone', features:[
+        {name:'Revenue (₹ Cr TTM)',              val:'₹18.4 Cr', q1:'₹12',  q3:'₹42',  median:'₹24',    pos:21, risk:'med', contrib:+3,  dir:'hb', brief:'Higher is better · Below median — smaller revenue base limits debt repayment capacity'},
+        {name:'Debt-Equity Ratio',               val:'2.14×',unit:'×',    q1:'0.8×', q3:'2.8×', median:'1.6×',   pos:73, risk:'med', contrib:+8,  dir:'lb', brief:'Lower is better · Healthy <1.5× · Above median leverage — business is debt-heavy relative to equity'},
+        {name:'EBITDA Margin (%)',               val:'8.2%',     q1:'6%',   q3:'18%',  median:'11%',    pos:18, risk:'med', contrib:+9,  dir:'hb', brief:'Higher is better · Below median — compressed margins reduce ability to service debt obligations'},
+        {name:'Operating CF / Debt Obligations', val:'0.82×',    q1:'0.9×', q3:'2.4×', median:'1.4×',   pos:3,  risk:'high',contrib:+14, dir:'hb', brief:'Higher is better · Safe zone ≥1.0× · Below Q1 — cash flow insufficient to cover debt obligations'},
+        {name:'Working Capital Cycle (days)',    val:'62 days',  q1:'32',   q3:'78',   median:'48',     pos:71, risk:'med', contrib:+7,  dir:'lb', brief:'Lower is better · Fewer days = faster cash conversion · Above median — working capital tied up longer'},
+        {name:'Gross Current Asset Days',        val:'88 days',unit:'days',  q1:'45',   q3:'95',   median:'64',     pos:76, risk:'med', contrib:+6,  dir:'lb', brief:'Lower is better · Measures how long receivables + inventory sit before converting to cash · Near Q3'},
+        {name:'Interest Coverage Ratio',         val:'1.9×',unit:'×',     q1:'1.4×', q3:'5.2×', median:'2.8×',   pos:13, risk:'high',contrib:+11, dir:'hb', brief:'Higher is better · Safe zone ≥2.5× · Below median — earnings barely cover interest expense'},
+        {name:'ROCE (%)',                        val:'11.4%',    q1:'8%',   q3:'24%',  median:'15%',    pos:21, risk:'med', contrib:+5,  dir:'hb', brief:'Higher is better · Below median — capital deployed in business generating below-average returns'},
+      ]},
+      {name:'Financial Performance (Trends)', key:'performance', features:[
+        {name:'Revenue Growth YoY (%)',          val:'+4.2%',    q1:'-5%',  q3:'+18%', median:'+8%',    pos:40, risk:'med', contrib:+6,  dir:'hb', brief:'Higher is better · Below median growth — losing revenue momentum relative to sector peers'},
+        {name:'EBITDA Margin Δ YoY (pp)',        val:'−2.1pp',   q1:'-4pp', q3:'+3pp', median:'+0.5pp', pos:27, risk:'med', contrib:+7,  dir:'hb', brief:'Higher is better · Positive = margin expanding · Margin contracting YoY signals cost pressure or pricing erosion'},
+        {name:'Debt Δ MoM (%)',                  val:'+3.4%',    q1:'-2%',  q3:'+5%',  median:'+1%',    pos:77, risk:'high',contrib:+10, dir:'lb', brief:'Lower is better · Negative = deleveraging · Debt growing faster than median — leverage building month-on-month'},
+        {name:'OCF Trend (6M slope)',            val:'−0.14',unit:'slope',    q1:'-0.1', q3:'+0.2', median:'+0.05',  pos:3,  risk:'high',contrib:+12, dir:'hb', brief:'Higher is better · Positive = growing cash flow · Below Q1 — operating cash generation deteriorating each month'},
+        {name:'Interest Coverage Δ YoY',         val:'−0.6×',unit:'× YoY',    q1:'-0.8×',q3:'+1×',  median:'+0.1×',  pos:11, risk:'med', contrib:+8,  dir:'hb', brief:'Higher is better · Positive = coverage improving · Coverage declining year-on-year — debt servicing capacity weakening'},
+        {name:'WC Cycle Δ (days)',               val:'+8 days',  q1:'-10',  q3:'+12',  median:'+2',     pos:82, risk:'high',contrib:+9,  dir:'lb', brief:'Lower is better · Negative = cycle shortening (good) · Cycle elongating — cash is getting trapped in operations longer'},
+      ]},
+      {name:'Financial Peer Comparison', key:'peer', features:[
+        {name:'Revenue Growth vs Sector Median', val:'−3.8pp',   q1:'-8pp', q3:'+5pp', median:'0pp',    pos:32, risk:'med', contrib:+6,  dir:'hb', brief:'Higher is better · Positive = outgrowing sector · Growing 3.8pp slower than sector median — losing competitive ground'},
+        {name:'EBITDA Margin vs Peers',          val:'−2.9pp',   q1:'-6pp', q3:'+4pp', median:'-1pp',   pos:31, risk:'med', contrib:+5,  dir:'hb', brief:'Higher is better · Positive = more profitable than peers · Margin 2.9pp below sector — cost structure disadvantage'},
+        {name:'Debt-Equity vs Sector Median',    val:'+0.54×',   q1:'-0.6×',q3:'+0.9×',median:'+0.1×', pos:76, risk:'med', contrib:+7,  dir:'lb', brief:'Lower is better · Positive = more leveraged than peers · 0.54× more D/E than sector median — relatively over-leveraged'},
+        {name:'Interest Coverage vs Peers',      val:'−0.9×',    q1:'-2×',  q3:'+1×',  median:'-0.3×',  pos:37, risk:'med', contrib:+5,  dir:'hb', brief:'Higher is better · Positive = stronger than peers · Coverage 0.9× below sector average — debt service capacity gap'},
+        {name:'ROCE vs Sector Median',           val:'−3.6pp',   q1:'-8pp', q3:'+3pp', median:'-1pp',   pos:40, risk:'med', contrib:+4,  dir:'hb', brief:'Higher is better · Positive = outperforming peers · Capital efficiency 3.6pp below sector median'},
+      ]},
+    ],
+    eventDate:{label:'FY 2023–24', iso:'2024-03-31', note:'Latest available audited financials (annual)'},
+    lastUpdated:{date:'05 Mar 2025', note:'Quarterly financials refreshed from CBS + borrower upload'},
+    freshness:{score:91, latestDate:'Mar 05, 2025', latestEvent:'Quarterly financials uploaded'},
+    coverage:{score:84, available:20, total:24},
+    confidence:{score:72, note:'OCF/Debt and Interest Coverage lie in lower IQR quartile, reducing confidence'}
+  },
+  behavioural:{
+    icon:'🔄', name:'Behavioural Agent', color:C.purple, colorD:C.purpleD,
+    modelType:'Supervised ML · XGBoost / Logistic Regression',
+    approach:'supervised',
+    description:'Trained on CBS transaction history and LMS conduct data. Captures early repayment stress through utilisation patterns, delinquency weighting, and account conduct signals. Collateral monitoring is embedded.',
+    categories:[
+      {name:'Account Conduct', key:'conduct', features:[
+        {name:'Δ OD Utilisation (3M avg vs prev)',  val:'+14pp',  q1:'-5pp', q3:'+12pp',median:'+2pp',   pos:97, risk:'high',contrib:+16, dir:'lb', brief:'Lower is better · 0=stable · OD drawdown spiking well above Q3 — classic early stress signal'},
+        {name:'Monthly Credit Churn Rate',          val:'−8.2%',  q1:'-12%', q3:'+4%', median:'-2%',    pos:24, risk:'med', contrib:+7,  dir:'hb', brief:'Higher is better · Credit inflows (collections) declining — business slowdown or collections delay'},
+        {name:'Monthly Debit Churn Rate',           val:'−11.4%', q1:'-14%', q3:'+2%', median:'-3%',    pos:16, risk:'high',contrib:+9,  dir:'hb', brief:'Higher is better · Debit outflows falling — fewer vendor payments, possible cash hoarding'},
+        {name:'Weighted Delinquency Trend L12M',    val:'0.64',unit:'0–1 score',   q1:'0',    q3:'0.4', median:'0.1',    pos:97, risk:'high',contrib:+18, dir:'lb', brief:'Lower is better · 0=clean · Well above Q3 — repeated DPD events weighted by recency and severity'},
+        {name:'Weighted Cash Withdrawal Instances', val:'0.48',   q1:'0.1',  q3:'0.5', median:'0.2',    pos:92, risk:'high',contrib:+12, dir:'lb', brief:'Lower is better · Near Q3 — elevated cash withdrawals signal stress-driven liquidity seeking'},
+        {name:'Cheque/NACH Bounce Frequency L12M',  val:'3 times',q1:'0',    q3:'2',   median:'0.5',    pos:97, risk:'high',contrib:+14, dir:'lb', brief:'Lower is better · Above Q3 — 3 bounces in 12M is a persistent payment stress indicator'},
+        {name:'Inward Return Charges (last 30D)',   val:'₹1,200', q1:'₹0',   q3:'₹500',median:'₹0',     pos:97, risk:'high',contrib:+11, dir:'lb', brief:'Lower is better · ₹1,200 >> Q3 ₹500 — incoming cheques bouncing, counterparty payment failures'},
+        {name:'Credit Card / Wallet Repayments %',  val:'18.4%',  q1:'2%',   q3:'12%', median:'5%',     pos:97, risk:'high',contrib:+13, dir:'lb', brief:'Lower is better · Above Q3 — relying on credit/wallet debt to fund operations'},
+      ]},
+      {name:'Collateral Monitoring', key:'collateral', features:[
+        {name:'LTV Ratio (current)',             val:'58%',    q1:'30%', q3:'65%', median:'48%',   pos:80, risk:'med', contrib:+6,  dir:'lb', brief:'Lower is better · Healthy <50% · Above median LTV — limited collateral headroom'},
+        {name:'LTV Ratio Δ (6M)',                val:'+3.2pp', q1:'-4pp',q3:'+5pp',median:'+0.5pp', pos:80, risk:'med', contrib:+5,  dir:'lb', brief:'Lower is better · Negative = improving · LTV rising — collateral coverage eroding over time'},
+        {name:'Collateral Value Δ (MoM)',        val:'−1.8%',  q1:'-4%', q3:'+3%', median:'0%',    pos:31, risk:'med', contrib:+4,  dir:'hb', brief:'Higher is better · Positive = appreciating · Collateral value declining slightly'},
+        {name:'Collateral Quality Score',        val:'6.2/10',unit:'0–100', q1:'4',   q3:'8.5', median:'6.5',   pos:49, risk:'ok',  contrib:-3,  dir:'hb', brief:'Higher is better · Near median — adequate collateral quality, no immediate concern'},
+        {name:'Insurance Coverage Active',       val:'Yes',    q1:'-',   q3:'-',   median:'-',     pos:90, risk:'ok',  contrib:-4,  dir:'hb', brief:'Higher is better · Insurance active — collateral risk adequately covered'},
+      ]},
+    ],
+    eventDate:{label:'Mar 2025 (MTD)', iso:'2025-03-07', note:'Latest CBS/LMS transaction date — refreshed daily'},
+    lastUpdated:{date:'07 Mar 2025', note:'Daily CBS transaction pull completed'},
+    freshness:{score:95, latestDate:'Mar 07, 2025', latestEvent:'CBS transaction pull — daily refresh'},
+    coverage:{score:88, available:13, total:15},
+    confidence:{score:74, note:'Delinquency and utilisation features are outside Q3 IQR — high outlier signal'}
+  },
+  consent:{
+    icon:'🔐', name:'Consent Triangulation Agent', color:C.teal, colorD:C.tealD,
+    modelType:'Triangulation · Range-Based (GST+BSA) + Supervised ML (Bureau)',
+    approach:'semisupervised',
+    description:'Three independent sub-models feed a triangulation score. GST and Bank Statement sub-models are unsupervised: each feature value is mapped to a 0–100 range score using configured thresholds, then weighted-summed into a sub-score. Bureau is a supervised ML (XGBoost) sub-model. The three sub-scores are combined at configured weights. Triggered combination rules apply a cumulative adjustment to the base score.',
+    subScores:{gst:40, bank:43, bureau:52, baseScore:44, ruleAdj:-20, final:42},
+    categoryWeights:[
+      {category:'GST Consent',    weight:40, type:'Unsupervised · Range-Based', subScore:40, note:'Each feature value mapped to 0–100 via configured threshold bands; weighted sum = GST sub-score'},
+      {category:'Bank Statement', weight:35, type:'Unsupervised · Range-Based', subScore:43, note:'Same range-scoring approach; 4 inflow/outflow features; weighted sum = BSA sub-score'},
+      {category:'Bureau',         weight:25, type:'Supervised ML · XGBoost',    subScore:52, note:'Trained on bureau default labels; SHAP values per feature drive the bureau sub-score'},
+      {category:'Rule Adjustments', weight:null, type:'Overlay', ruleAdj:-2, note:'5 of 8 combination rules triggered — each fires a pre-configured score penalty'},
+    ],
+    categories:[
+      {name:'GST Consent Features', key:'gst', type:'range', subScore:40, features:[
+        {name:'GSTR-1 Sales Δ (last 2M)',         val:'−18.4%',  rangeScore:18, weight:25, risk:'high',
+         rangeNote:'> +10% → 80–100 | +2 to +10% → 60–80 | −5 to +2% → 40–60 | −15 to −5% → 15–40 | < −15% → 0–15',
+         brief:'Sales contracting 18.4% in 2M — below −15% distress threshold → low range score'},
+        {name:'ITC Claimed / ITC Available',      val:'0.56',    rangeScore:15, weight:25, risk:'high',
+         rangeNote:'> 0.95 → 80–100 | 0.80–0.95 → 60–80 | 0.65–0.80 → 40–60 | 0.60–0.65 → 20–40 | < 0.60 → 0–20',
+         brief:'ITC claim ratio 0.56 — below 0.60 floor; business not drawing available tax credit (cash stress)'},
+        {name:'GSTR-3B Filed (current)',          val:'Filed',   rangeScore:100, weight:10, risk:'ok',
+         rangeNote:'Filed on time → 100 | Filed with delay → 40–60 | Not filed → 0',
+         brief:'Compliance maintained — GSTR-3B filed on time this period'},
+        {name:'Credit Notes as % of Purchases',   val:'7.2%',    rangeScore:62, weight:15, risk:'med',
+         rangeNote:'< 2% → 85–100 | 2–5% → 65–85 | 5–10% → 45–65 | 10–15% → 20–45 | > 15% → 0–20',
+         brief:'7.2% credit notes — moderate; elevated above typical healthy range but below alarm threshold'},
+        {name:'GSTR-2B Purchase Δ (2M)',          val:'+14.2%',  rangeScore:32, weight:15, risk:'high',
+         rangeNote:'< −5% → 80–100 | −5 to +5% → 60–80 | +5 to +10% → 40–60 | +10 to +15% → 20–40 | > +15% → 0–20',
+         brief:'Purchases rising +14.2% while revenue falls — buying increasing without matching sales recovery'},
+        {name:'GST Balance (18–20th) vs Payable', val:'−₹62K',  rangeScore:8,  weight:10, risk:'high',
+         rangeNote:'> ₹100K buffer → 85–100 | ₹20K–₹100K → 60–85 | ₹0–₹20K → 40–60 | −₹50K to ₹0 → 15–40 | < −₹50K → 0–15',
+         brief:'Negative balance of ₹62K on due-date window — cannot cover GST liability from account'},
+      ]},
+      {name:'Bank Statement Features', key:'bank', type:'range', subScore:43, features:[
+        {name:'Collection Realization Ratio',     val:'0.74',    rangeScore:24, weight:35, risk:'high',
+         rangeNote:'> 1.05 → 85–100 | 0.90–1.05 → 65–85 | 0.80–0.90 → 45–65 | 0.70–0.80 → 20–45 | < 0.70 → 0–20',
+         brief:'0.74 — only ₹0.74 collected per ₹1 of GST sales; debtors are not paying within credit terms'},
+        {name:'Net Inflow Trend (6M slope)',       val:'−0.12',   rangeScore:12, weight:30, risk:'high',
+         rangeNote:'> +0.15 → 85–100 | +0.05 to +0.15 → 65–85 | −0.05 to +0.05 → 45–65 | −0.10 to −0.05 → 20–45 | < −0.10 → 0–20',
+         brief:'Slope −0.12 — bank inflows consistently contracting month-on-month for 6 months'},
+        {name:'Salary / EPFO Payments (60D)',      val:'Active',  rangeScore:100, weight:15, risk:'ok',
+         rangeNote:'Active → 100 | Partial → 40–70 | Inactive → 0',
+         brief:'Payroll obligations being met — business operational with active workforce'},
+        {name:'Operating Expense Regularity',     val:'82%',     rangeScore:68, weight:20, risk:'ok',
+         rangeNote:'> 92% → 85–100 | 85–92% → 68–85 | 75–85% → 50–68 | 60–75% → 25–50 | < 60% → 0–25',
+         brief:'82% regularity — just below the healthy median band; minor irregularity in periodic payments'},
+      ]},
+      {name:'Bureau Sub-Model', key:'bureau', type:'supervised', subScore:52, features:[
+        {name:'Credit Utilisation Ratio',      val:'72%',      risk:'high', contrib:+14, dir:'lb', brief:'Healthy <40% · At 72%, limits nearly exhausted — heavy credit dependency'},
+        {name:'Unsecured Loan Enquiries (30D)',  val:'2',        risk:'med',  contrib:+9,  dir:'lb', brief:'2 unsecured enquiries in 30 days — fresh borrowing dependency building'},
+        {name:'Latest EMI Δ vs 3M Avg',         val:'+18.4%',   risk:'high', contrib:+12, dir:'lb', brief:'EMI obligations up 18.4% vs 3M avg — new debt burden recently added'},
+        {name:'Latest Enquiry Type',            val:'Unsecured', risk:'high', contrib:+7,  dir:'lb', brief:'Unsecured enquiry pattern — indicative of liquidity gap, not asset acquisition'},
+      ]},
+    ],
+    rules:[
+      {id:'R1', title:'GSTR-1 Sales Decline + Bureau Utilisation Spike', triggered:false, penalty:3,
+       scenario:'Sales falling sharply while bureau limits are maxed out — classic cash crunch, borrowing to stay operational',
+       conditions:['GSTR-1 sales ↓ >25% in 2 months', 'Bureau credit utilization >80%'],
+       alert:'Early Alert: Liquidity under pressure', vals:['−18.4% (threshold not met)','72% (near threshold)']},
+      {id:'R2', title:'ITC Stress + Borrowing Dependency', triggered:true, penalty:4,
+       scenario:'ITC claim ratio below threshold for 2 consecutive months and EMI obligations spiking — business is not collecting input credits and taking on new debt simultaneously',
+       conditions:['ITC Claimed / Available <0.6 for 2 consecutive months','Latest EMI ↑ >20% vs 3M avg'],
+       alert:'Funding stress & dependency on fresh borrowing', vals:['0.56 ✓','18.4% (near threshold)']},
+      {id:'R3', title:'Sales Flat + Vendor Disputes', triggered:false, penalty:3,
+       scenario:'Revenue stagnating while credit notes and unsecured enquiries are elevated — vendor friction and liquidity gap building together',
+       conditions:['GSTR-1 sales flat (±5%) over 3M','Credit Notes >12% of purchases','Unsecured enquiries >3 in 30D'],
+       alert:'Liquidity stress & vendor disputes', vals:['−18.4% (not flat)','7.2% (below threshold)','2 enquiries']},
+      {id:'R4', title:'Purchases Rising, ITC Dropping', triggered:true, penalty:5,
+       scenario:'Buying from suppliers is increasing but tax credit utilisation is falling — goods received but payments delayed or disputed, cash stuck in the chain',
+       conditions:['GSTR-2B purchase ↑ >10% over 2M','ITC Claimed/Available drops >20% MoM','Unsecured enquiries >2 in 30D'],
+       alert:'Buying but not paying — supplier friction or cash stuck', vals:['14.2% ✓','0.56 → significant drop ✓','2 enquiries ✓']},
+      {id:'R5', title:'Collections Below Credit Terms', triggered:true, penalty:4,
+       scenario:'Bank inflows in current month are less than 80% of GST sales from 60 days prior — customers are not paying within the agreed credit period',
+       conditions:['Collection Ratio = Bank Inflows_T / GST Sales_(T-60D) < 0.80'],
+       alert:'Not collecting as per credit terms (60-day window)', vals:['Ratio: 0.74 ✓ (below 0.80)']},
+      {id:'R6', title:'Inward Returns + ITC Strain', triggered:true, penalty:3,
+       scenario:'Counterparty cheques bouncing (inward returns >₹500) at the same time ITC claim ratio is stressed — receivables failing and tax credit capacity both impaired',
+       conditions:['Return charges >₹500 or debit failure in 30D','ITC claim ratio <0.6'],
+       alert:'Working capital stress brewing', vals:['₹1,200 ✓','0.56 ✓']},
+      {id:'R7', title:'Credit-Funded Operations', triggered:true, penalty:4,
+       scenario:'More than 15% of outgoing debits are repayments on credit cards, wallets, or consumer debt — business is using personal/consumer credit to fund day-to-day operations',
+       conditions:['Wallet/CC/Debit repayments >15% of total debits'],
+       alert:'Using credit to fund operations', vals:['18.4% ✓']},
+      {id:'R8', title:'GST Non-Filing + Balance Shortfall', triggered:false, penalty:6,
+       scenario:'GSTR-3B unfiled and account balance insufficient to cover tax liability on due dates — both compliance failure and inability to pay indicate severe distress',
+       conditions:['GSTR-3B not filed','Balance on 18–20th < GST payable from GSTR-3B'],
+       alert:'Compliance + liquidity red flag', vals:['GSTR-3B filed (not triggered)','—']},
+    ],
+    eventDate:{label:'Feb 2025 (GST + bank stmt)', iso:'2025-02-28', note:'Latest consent data month — GST and bank statement'},
+    lastUpdated:{date:'04 Mar 2025', note:'GST consent data refreshed via Account Aggregator'},
+    freshness:{score:90, latestDate:'Mar 04, 2025', latestEvent:'GST consent data refreshed via AA'},
+    coverage:{score:82, available:14, total:17},
+    confidence:{score:68, note:'2 bureau features have moderate data staleness; ITC and collection ratio are primary confidence detractors'}
+  },
+  news:{
+    icon:'📰', name:'News & Sentiment Agent', color:C.gold, colorD:C.goldD,
+    modelType:'Semi-Supervised · NLP Sentiment + Category Weights',
+    approach:'semisupervised',
+    description:'NLP model scores each article for sentiment (0–100, higher = more negative). Category weight is user-defined in the admin portal. Agent score = 100 − Σ(category_weight × avg_sentiment / 100).',
+    // Category weights — configured in admin portal
+    categoryWeights:[
+      {category:'Tax Raid / Regulatory Action', weight:30, note:'Regulatory action is a direct credit event — highest weight'},
+      {category:'Fraud / Malpractice News',     weight:25, note:'Entity-matched against RBI/SEBI/NCLT defaulter lists'},
+      {category:'Sectoral / Industry Risk',     weight:25, note:'NLP on sector corpus — tagged by borrower industry automatically'},
+      {category:'Management News',              weight:20, note:'Director changes, promoter signals, AGM outcomes — softer signal'},
+    ],
+    // Per-category data with individual article NLP scores
+    newsCategories:[
+      {
+        name:'Sectoral / Industry Risk', weight:25, color:C.amber,
+        articles:[
+          {headline:'Textile sector sees 12% demand slowdown in Q3',         date:'Mar 05, 2025', nlpScore:72, source:'Economic Times'},
+          {headline:'Export volumes decline amid global headwinds',            date:'Mar 04, 2025', nlpScore:64, source:'Business Standard'},
+          {headline:'Raw material costs up 8% YoY for manufacturing sector',  date:'Feb 28, 2025', nlpScore:48, source:'Mint'},
+        ],
+      },
+      {
+        name:'Management News', weight:20, color:C.blue,
+        articles:[
+          {headline:'No abnormal director resignations detected',              date:'Mar 07, 2025', nlpScore:8,  source:'MCA portal'},
+          {headline:'AGM held on schedule — no red flags noted',              date:'Feb 20, 2025', nlpScore:6,  source:'ROC filings'},
+          {headline:'Promoter background check: clean',                        date:'Feb 15, 2025', nlpScore:5,  source:'Bureau check'},
+        ],
+      },
+      {
+        name:'Tax Raid / Regulatory Action', weight:30, color:C.green,
+        articles:[
+          {headline:'No GST or IT department actions detected in last 90D',   date:'Mar 07, 2025', nlpScore:4,  source:'GST portal'},
+          {headline:'No SEBI or RBI notices found for entity or directors',   date:'Mar 06, 2025', nlpScore:3,  source:'SEBI/RBI crawl'},
+        ],
+      },
+      {
+        name:'Fraud / Malpractice News', weight:25, color:C.green,
+        articles:[
+          {headline:'Company not present in RBI defaulter or CIBIL fraud list',date:'Mar 07, 2025', nlpScore:2,  source:'RBI/CIBIL'},
+          {headline:'No fraud or malpractice news in indexed sources',         date:'Mar 05, 2025', nlpScore:4,  source:'News crawl'},
+        ],
+      },
+    ],
+    eventDate:{label:'Mar 07, 2025', iso:'2025-03-07', note:'Latest article date from daily crawl'},
+    lastUpdated:{date:'07 Mar 2025', note:'Daily news crawl — 847 articles scanned, 9 matched to entity'},
+    sourceType:'event_driven',
+    crawlStatus:{ok:true, lastCrawl:'Mar 07, 2025', articlesScanned:847, articlesMatched:9},
+    freshness:{score:96, latestDate:'Mar 07, 2025', latestEvent:'Daily crawl completed — 847 articles scanned',
+      note:'Freshness = recency of last successful crawl. Decays if crawl fails or is delayed. No articles found = clean signal, not stale data.'},
+    coverage:{score:100, available:4, total:4,
+      note:'N/A for event-driven agents. All 4 categories checked — no negative events = healthy signal, not a data gap.'},
+    confidence:{score:72, available:4, total:4,
+      note:'Confidence reflects NLP article volume. Low article count = wider variance in sentiment estimate. Absence of negative news does not reduce confidence.'},
+  },
+  legal:{
+    icon:'⚖️', name:'Legal Agent', color:C.amber, colorD:C.amberD,
+    modelType:'Unsupervised · Event-Driven Scoring',
+    approach:'unsupervised',
+    sourceType:'event_driven',
+    description:'Monitors court filings, recovery suits, and regulatory notices via automated crawls. Each event type has a configured weight. Score = 100 when no adverse events found; drops when events are detected.',
+    categories:[
+      {name:'Court & Legal Filings', key:'legal', features:[
+        {name:'Active Court Cases',       val:'0',     weight:18, brief:'Per active civil case detected',              q1:'0',q3:'1',median:'0',pos:5, risk:'ok',  contrib:-5},
+        {name:'Legal Cases Filed L12M',   val:'0',     weight:14, brief:'New filings in last 12 months',              q1:'0',q3:'0',median:'0',pos:5, risk:'ok',  contrib:-3},
+        {name:'Recovery Suits',           val:'None',  weight:22, brief:'Suits filed by bank or creditor',            q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-4},
+        {name:'NCLT / DRT Proceedings',   val:'None',  weight:28, brief:'Insolvency or debt tribunal proceedings',    q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-3},
+        {name:'Regulatory Notice',        val:'None',  weight:16, brief:'Formal GST/IT notice received',             q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-2},
+        {name:'Director Disqualification',val:'None',  weight:24, brief:'Any director flagged in MCA records',       q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-2},
+      ]},
+    ],
+    eventDate:{label:'Mar 06, 2025', iso:'2025-03-06', note:'Latest court/MCA crawl date'},
+    lastUpdated:{date:'06 Mar 2025', note:'MCA & court records automated crawl'},
+    freshness:{score:88, latestDate:'Mar 06, 2025', latestEvent:'MCA & court records crawl'},
+    coverage:{score:90, available:7, total:8},
+    confidence:{score:88, note:'All compliance checks are current and clear. High confidence low-risk signal.'}
+  },
+  compliance:{
+    icon:'📋', name:'Compliance Agent', color:C.purple, colorD:C.purpleD,
+    modelType:'Unsupervised · Recency-Weighted Filing Score',
+    approach:'unsupervised',
+    sourceType:'event_driven',
+    description:'Monitors GST, EPFO and statutory filing compliance over a rolling L12M window. Each feature carries a weight. Recency-weighted score — latest month carries highest weight, prior months decay.',
+    categories:[
+      {name:'GST Compliance — L12M', key:'gst_compliance', features:[
+        {name:'On-Time Filings (GSTR-1 + 3B)',  val:'7 of 12',   weight:20, brief:'Target ≥10/12 · Below median signals filing stress',        q1:'10',q3:'12',median:'11',  pos:28, risk:'med', contrib:+12},
+        {name:'Delayed Filings (1–30 days)',     val:'3 months',  weight:15, brief:'Partial score month · 3 instances this year',               q1:'0', q3:'2', median:'1',   pos:78, risk:'high',contrib:+14},
+        {name:'Missed / Nil Filings',            val:'2 months',  weight:20, brief:'Zero-score months · 2 consecutive is critical',             q1:'0', q3:'0', median:'0',   pos:95, risk:'high',contrib:+18},
+        {name:'Recency-Weighted Score',          val:'62/100',    weight:15, brief:'Latest month weight 2× · Decays 0.15/month prior',          q1:'80',q3:'100',median:'92', pos:18, risk:'high',contrib:+16},
+        {name:'Latest Month Status',             val:'Delayed',   weight:10, brief:'Single latest month snapshot · High recency weight',        q1:'-', q3:'-', median:'-',   pos:40, risk:'med', contrib:+8},
+        {name:'Late/Missed Streak',              val:'2 months',  weight:10, brief:'Consecutive streak above 1 = heightened concern',           q1:'0', q3:'1', median:'0',   pos:85, risk:'high',contrib:+11},
+      ]},
+      {name:'EPFO Compliance — L12M', key:'epfo_compliance', features:[
+        {name:'On-Time ECR Filings',             val:'9 of 12',   weight:10, brief:'Target ≥10/12 · ECR = monthly PF remittance',               q1:'10',q3:'12',median:'12',  pos:38, risk:'med', contrib:+8},
+        {name:'Delayed ECR Filings',             val:'2 months',  weight:8,  brief:'Late remittances signal cash flow pressure',                 q1:'0', q3:'1', median:'0',   pos:80, risk:'high',contrib:+10},
+        {name:'Missed / Nil ECR',                val:'1 month',   weight:10, brief:'Non-filing indicates workforce or cash stress',              q1:'0', q3:'0', median:'0',   pos:90, risk:'high',contrib:+12},
+        {name:'Recency-Weighted EPFO Score',     val:'74/100',    weight:8,  brief:'Same decay model as GST · Recent months weight higher',     q1:'85',q3:'100',median:'96', pos:22, risk:'med', contrib:+9},
+        {name:'Headcount Trend (L6M)',           val:'−8 staff',  weight:8,  brief:'Sustained headcount drop may indicate business contraction', q1:'-5',q3:'+10',median:'+2',pos:20, risk:'med', contrib:+6},
+        {name:'Latest ECR Status',               val:'On time',   weight:5,  brief:'Most recent month filed on time',                           q1:'-', q3:'-', median:'-',   pos:10, risk:'ok', contrib:-3},
+      ]},
+      {name:'Other Statutory', key:'other_compliance', features:[
+        {name:'MCA Annual Filing (ROC)',          val:'Up to date',weight:5,  brief:'Annual return filed with ROC — no penalty',                 q1:'-',q3:'-',median:'-',pos:5,  risk:'ok', contrib:-2},
+        {name:'Income Tax Return',               val:'Filed',     weight:5,  brief:'AY 24-25 filed — no outstanding demand',                    q1:'-',q3:'-',median:'-',pos:5,  risk:'ok', contrib:-2},
+        {name:'TDS Returns (26Q / 24Q)',          val:'Delayed 1Q',weight:4,  brief:'1 quarter delayed — low weight but noted',                  q1:'-',q3:'-',median:'-',pos:55, risk:'med', contrib:+5},
+        {name:'Professional Tax',                val:'Compliant', weight:2,  brief:'State professional tax compliant',                          q1:'-',q3:'-',median:'-',pos:5,  risk:'ok', contrib:-1},
+      ]},
+    ],
+    eventDate:{label:'Feb 2025 (GSTR-3B)', iso:'2025-02-20', note:'Latest GST filing event date'},
+    lastUpdated:{date:'05 Mar 2025', note:'GST portal + EPFO ECR automated crawl'},
+    freshness:{score:82, latestDate:'Mar 05, 2025', latestEvent:'GST portal + EPFO ECR crawl'},
+    coverage:{score:88, available:14, total:16},
+    confidence:{score:68, note:'2 consecutive missed GST filings and delayed EPFO — recency-weighted scores reflect recent deterioration'}
+  },
+  management:{
+    icon:'👔', name:'Management Risk Agent', color:C.slate, colorD:C.hi2,
+    modelType:'Unsupervised · Event-Driven + Qualitative Scoring',
+    approach:'unsupervised',
+    sourceType:'event_driven',
+    description:'Monitors management stability, promoter behaviour, and leadership quality. Combines event-driven signals (resignations, pledges, ownership changes) with qualitative scores (experience, qualification). Score = 100 when no adverse signals; drops on detected events or low qualitative scores.',
+    categories:[
+      {name:'Stability Signals', key:'mgmt_stability', features:[
+        {name:'Director Resignations (L12M)',   val:'2 resigned', weight:28, risk:'high',
+         brief:'2 resignations in 12M — management churn is a leading distress indicator',
+         rangeNote:'0 → 90–100 | 1 → 55–75 | 2 → 25–50 | 3+ → 0–20', rangeScore:32},
+        {name:'Promoter Pledge %',              val:'48%',         weight:24, risk:'high',
+         brief:'48% of stake pledged — high pledge signals promoter liquidity stress',
+         rangeNote:'0% → 90–100 | <15% → 70–85 | 15–35% → 45–65 | 35–50% → 20–40 | >50% → 0–20', rangeScore:28},
+        {name:'Promoter Shareholding Δ (6M)',   val:'−6.2pp',      weight:18, risk:'high',
+         brief:'Stake reduced 6.2pp in 6M — dilution may signal exit intent or pledge invocation',
+         rangeNote:'Increase → 80–100 | ±1pp → 65–80 | −1 to −3pp → 40–60 | −3 to −7pp → 15–38 | >−7pp → 0–15', rangeScore:25},
+        {name:'Board Meeting Attendance',       val:'72%',         weight:10, risk:'med',
+         brief:'Below 75% — low attendance may reflect disengagement or internal disputes',
+         rangeNote:'>90% → 85–100 | 75–90% → 60–80 | 60–75% → 35–58 | <60% → 0–30', rangeScore:52},
+      ]},
+      {name:'Leadership Quality', key:'mgmt_quality', features:[
+        {name:'Sector Experience (MD / Promoter)',val:'6 yrs',      weight:12, risk:'med',
+         brief:'Below 10-year benchmark — moderate experience base for MSME lending comfort',
+         rangeNote:'>15 yrs → 85–100 | 10–15 yrs → 65–85 | 5–10 yrs → 40–62 | <5 yrs → 0–35', rangeScore:48},
+        {name:'Qualification Relevance',         val:'Moderate',   weight:5,  risk:'med',
+         brief:'Qualifications partially relevant to business domain — assessed via MCA/LinkedIn check',
+         rangeNote:'Highly relevant → 80–100 | Moderate → 45–70 | Low relevance → 0–40', rangeScore:55},
+        {name:'Key-Man / Succession Risk',       val:'High',       weight:3,  risk:'high',
+         brief:'Single promoter-director running operations — no visible second-line management',
+         rangeNote:'Low risk → 80–100 | Moderate → 40–70 | High → 0–35', rangeScore:22},
+      ]},
+    ],
+    eventDate:{label:'Mar 06, 2025', iso:'2025-03-06', note:'MCA director data + shareholding crawl'},
+    lastUpdated:{date:'06 Mar 2025', note:'MCA/ROC automated crawl + manual qualitative review'},
+    crawlStatus:{ok:true},
+    freshness:{score:85, latestDate:'Mar 06, 2025', latestEvent:'MCA director & shareholding data crawl'},
+    coverage:{score:78, available:7, total:9},
+    confidence:{score:72, note:'Resignation and pledge data from MCA; qualitative scores carry higher subjectivity'}
+  },
+};
+
+// ══════════════════════════════════════════
+// BORROWER DATA
+// ══════════════════════════════════════════
+const BORROWERS=[
+  {id:'BL-7842',name:'Sunrise Textiles Pvt Ltd',sector:'Manufacturing',loan:'₹2.8 Cr',product:'MSME Term Loan',vintage:'36M',rm:'Priya Nair',score:33,
+   agentScores:{financial:29,behavioural:26,consent:42,news:58,legal:80,compliance:42,management:34},
+   scoreHistory:{
+    monthly:[
+      // 3 years of composite monthly (Mar-22 → Mar-25)
+      {m:'Mar-22',c:84,ev:true,t:'FY2020-21 audited'},{m:'Apr-22',c:83},{m:'May-22',c:83},{m:'Jun-22',c:82,ev:true,t:'Q1 CBS'},{m:'Jul-22',c:82},{m:'Aug-22',c:81},{m:'Sep-22',c:80,ev:true,t:'Q2 CBS'},{m:'Oct-22',c:80},{m:'Nov-22',c:79},{m:'Dec-22',c:79,ev:true,t:'Q3 CBS'},{m:'Jan-23',c:78},{m:'Feb-23',c:78},
+      {m:'Mar-23',c:76,ev:true,t:'FY2021-22 audited'},{m:'Apr-23',c:75},{m:'May-23',c:74},{m:'Jun-23',c:73,ev:true,t:'Q1 CBS'},{m:'Jul-23',c:72},{m:'Aug-23',c:70},{m:'Sep-23',c:68,ev:true,t:'Q2 CBS + GST'},{m:'Oct-23',c:66},{m:'Nov-23',c:63},{m:'Dec-23',c:61,ev:true,t:'Q3 CBS'},{m:'Jan-24',c:58},{m:'Feb-24',c:56},
+      {m:'Mar-24',c:62,ev:true,t:'FY2022-23 audited'},{m:'Apr-24',c:60},{m:'May-24',c:59},{m:'Jun-24',c:56,ev:true,t:'Q1 CBS'},{m:'Jul-24',c:54},{m:'Aug-24',c:52},{m:'Sep-24',c:48,ev:true,t:'Q2 CBS + GST'},{m:'Oct-24',c:45},{m:'Nov-24',c:42},{m:'Dec-24',c:39,ev:true,t:'Q3 CBS'},{m:'Jan-25',c:37},{m:'Feb-25',c:35},
+      {m:'Mar-25',c:33,ev:true,t:'FY2023-24 audited'}
+    ],
+    quarterly:[
+      // 9 quarters agent scores — higher = healthier
+      {q:'Q1-23',financial:74,behavioural:72,consent:70,news:78,legal:88,compliance:80,management:72},
+      {q:'Q2-23',financial:71,behavioural:70,consent:66,news:75,legal:86,compliance:76,management:68},
+      {q:'Q3-23',financial:68,behavioural:65,consent:60,news:72,legal:84,compliance:72,management:62},
+      {q:'Q4-23',financial:64,behavioural:60,consent:55,news:68,legal:82,compliance:68,management:56},
+      {q:'Q1-24',financial:58,behavioural:54,consent:48,news:64,legal:80,compliance:62,management:50},
+      {q:'Q2-24',financial:52,behavioural:48,consent:44,news:60,legal:80,compliance:58,management:44},
+      {q:'Q3-24',financial:46,behavioural:40,consent:38,news:56,legal:78,compliance:52,management:40},
+      {q:'Q4-24',financial:40,behavioural:32,consent:34,news:52,legal:76,compliance:46,management:36},
+      {q:'Q1-25',financial:29,behavioural:26,consent:42,news:58,legal:80,compliance:42,management:34},
+    ]
+  },
+   
+   insight:'Early liquidity stress detected — declining bank inflows (−14% MoM) and repeat DPD events are primary drivers. Fundamentals remain intact but consent triangulation flags 4 active rules.',
+   action:'Watch List · Request bank statement refresh · Review working capital limits', actionC:'#F5A623',
+   shap:[{l:'Δ OD Utilisation',v:+18,src:'Behavioural'},{l:'Bank inflow trend (6M)',v:+14,src:'Consent'},{l:'Weighted Delinquency L12M',v:+12,src:'Behavioural'},{l:'ITC Claimed / ITC Available',v:+11,src:'Consent'},{l:'Operating CF / Debt Obligations',v:+10,src:'Financial'},{l:'Interest Coverage Ratio',v:+9,src:'Financial'},{l:'Collection Realization Ratio',v:+8,src:'Consent'},{l:'EPFO employee count Δ',v:+6,src:'Consent'},{l:'GST filing regularity',v:-9,src:'Consent'},{l:'EMI coverage ratio',v:-7,src:'Financial'},{l:'Collateral Quality Score',v:-4,src:'Behavioural'},{l:'Legal case filings',v:-5,src:'Legal'}],
+  },
+  {id:'BL-4419',name:'Apex Pharma Components Ltd',sector:'Pharma & Chemicals',loan:'₹7.4 Cr',product:'Working Capital OD',vintage:'54M',rm:'Suresh Menon',score:17,
+   agentScores:{financial:12,behavioural:15,consent:21,news:28,legal:22,compliance:28,management:18},
+   scoreHistory:{
+    monthly:[
+      {m:'Mar-22',c:72,ev:true,t:'FY2020-21 audited'},{m:'Apr-22',c:71},{m:'May-22',c:71},{m:'Jun-22',c:70,ev:true,t:'Q1 CBS'},{m:'Jul-22',c:69},{m:'Aug-22',c:68},{m:'Sep-22',c:67,ev:true,t:'Q2 CBS'},{m:'Oct-22',c:67},{m:'Nov-22',c:66},{m:'Dec-22',c:65,ev:true,t:'Q3 CBS'},{m:'Jan-23',c:64},{m:'Feb-23',c:63},
+      {m:'Mar-23',c:65,ev:true,t:'FY2021-22 audited'},{m:'Apr-23',c:63},{m:'May-23',c:61},{m:'Jun-23',c:60,ev:true,t:'Q1 CBS'},{m:'Jul-23',c:58},{m:'Aug-23',c:55},{m:'Sep-23',c:52,ev:true,t:'Q2 + court case'},{m:'Oct-23',c:50},{m:'Nov-23',c:48},{m:'Dec-23',c:46,ev:true,t:'Q3 CBS'},{m:'Jan-24',c:44},{m:'Feb-24',c:43},
+      {m:'Mar-24',c:48,ev:true,t:'FY2022-23 audited'},{m:'Apr-24',c:45},{m:'May-24',c:43},{m:'Jun-24',c:38,ev:true,t:'Q1 + OD spike'},{m:'Jul-24',c:35},{m:'Aug-24',c:32},{m:'Sep-24',c:28,ev:true,t:'Q2 + 2nd court'},{m:'Oct-24',c:26},{m:'Nov-24',c:24},{m:'Dec-24',c:21,ev:true,t:'Q3 CBS'},{m:'Jan-25',c:20},{m:'Feb-25',c:19},
+      {m:'Mar-25',c:17,ev:true,t:'FY2023-24 audited'}
+    ],
+    quarterly:[
+      {q:'Q1-23',financial:65,behavioural:64,consent:62,news:68,legal:72,compliance:70,management:68},
+      {q:'Q2-23',financial:62,behavioural:60,consent:58,news:64,legal:68,compliance:65,management:62},
+      {q:'Q3-23',financial:58,behavioural:55,consent:52,news:60,legal:60,compliance:60,management:55},
+      {q:'Q4-23',financial:54,behavioural:50,consent:48,news:56,legal:54,compliance:55,management:46},
+      {q:'Q1-24',financial:50,behavioural:45,consent:44,news:52,legal:50,compliance:50,management:38},
+      {q:'Q2-24',financial:42,behavioural:38,consent:36,news:46,legal:44,compliance:44,management:30},
+      {q:'Q3-24',financial:32,behavioural:28,consent:28,news:38,legal:34,compliance:36,management:24},
+      {q:'Q4-24',financial:20,behavioural:20,consent:24,news:32,legal:28,compliance:30,management:20},
+      {q:'Q1-25',financial:12,behavioural:15,consent:21,news:28,legal:22,compliance:28,management:18},
+    ]
+  },
+   
+   insight:'Multiple converging distress signals across all agents. OD maxed at 96%, DPD events, 2 active court cases, news sentiment negative.',
+   action:'Escalate to NPA Prevention Desk · Initiate covenant review · Legal team alert', actionC:'#EF5757',
+   shap:[{l:'DPD >60 days',v:+22,src:'Behavioural'},{l:'OD Utilisation Δ',v:+18,src:'Behavioural'},{l:'ITC stress + borrowing',v:+14,src:'Consent'},{l:'Legal case filings',v:+12,src:'Legal'},{l:'Bank inflow trend',v:+9,src:'Consent'},{l:'EPFO headcount Δ',v:+7,src:'Consent'},{l:'News sentiment',v:+8,src:'News'},{l:'EMI coverage ratio',v:-6,src:'Financial'},{l:'Collateral cover',v:-3,src:'Behavioural'}],
+  },
+  {id:'BL-2931',name:'GreenFields Agro Exports',sector:'Agriculture & Food',loan:'₹1.2 Cr',product:'Kisan MSME Loan',vintage:'18M',rm:'Kavitha Rao',score:72,
+   agentScores:{financial:78,behavioural:82,consent:76,news:85,legal:90,compliance:82,management:79},
+   scoreHistory:{
+    monthly:[
+      {m:'Mar-22',c:38,ev:true,t:'FY2020-21 audited'},{m:'Apr-22',c:38},{m:'May-22',c:39},{m:'Jun-22',c:40,ev:true,t:'Q1 CBS'},{m:'Jul-22',c:41},{m:'Aug-22',c:42},{m:'Sep-22',c:43,ev:true,t:'Q2 CBS'},{m:'Oct-22',c:43},{m:'Nov-22',c:44},{m:'Dec-22',c:45,ev:true,t:'Q3 CBS'},{m:'Jan-23',c:46},{m:'Feb-23',c:47},
+      {m:'Mar-23',c:50,ev:true,t:'FY2021-22 audited'},{m:'Apr-23',c:51},{m:'May-23',c:52},{m:'Jun-23',c:54,ev:true,t:'Q1 CBS'},{m:'Jul-23',c:56},{m:'Aug-23',c:57},{m:'Sep-23',c:59,ev:true,t:'Q2 CBS'},{m:'Oct-23',c:60},{m:'Nov-23',c:61},{m:'Dec-23',c:62,ev:true,t:'Q3 CBS'},{m:'Jan-24',c:63},{m:'Feb-24',c:64},
+      {m:'Mar-24',c:64,ev:true,t:'FY2022-23 audited'},{m:'Apr-24',c:65},{m:'May-24',c:66},{m:'Jun-24',c:67,ev:true,t:'Q1 CBS'},{m:'Jul-24',c:68},{m:'Aug-24',c:69},{m:'Sep-24',c:70,ev:true,t:'Q2 CBS'},{m:'Oct-24',c:70},{m:'Nov-24',c:71},{m:'Dec-24',c:72,ev:true,t:'Q3 CBS'},{m:'Jan-25',c:72},{m:'Feb-25',c:72},
+      {m:'Mar-25',c:72,ev:true,t:'FY2023-24 audited'}
+    ],
+    quarterly:[
+      {q:'Q1-23',financial:46,behavioural:44,consent:48,news:58,legal:70,compliance:62,management:72},
+      {q:'Q2-23',financial:50,behavioural:48,consent:52,news:62,legal:74,compliance:66,management:74},
+      {q:'Q3-23',financial:54,behavioural:52,consent:56,news:66,legal:76,compliance:70,management:76},
+      {q:'Q4-23',financial:58,behavioural:56,consent:60,news:70,legal:80,compliance:74,management:77},
+      {q:'Q1-24',financial:62,behavioural:60,consent:64,news:74,legal:84,compliance:76,management:78},
+      {q:'Q2-24',financial:66,behavioural:65,consent:68,news:78,legal:86,compliance:78,management:78},
+      {q:'Q3-24',financial:70,behavioural:70,consent:72,news:82,legal:88,compliance:80,management:79},
+      {q:'Q4-24',financial:74,behavioural:76,consent:74,news:84,legal:90,compliance:82,management:79},
+      {q:'Q1-25',financial:78,behavioural:82,consent:76,news:85,legal:90,compliance:82,management:79},
+    ]
+  },
+   
+   insight:'Strong repayment discipline and improving fundamentals across all agents. Revenue +22.4% YoY, clean conduct, all consent rules clean.',
+   action:'No action · Standard monitoring · Eligible for credit limit enhancement review', actionC:'#3DD68C',
+   shap:[{l:'EMI coverage ratio',v:-14,src:'Financial'},{l:'GST filing regularity',v:-11,src:'Consent'},{l:'Turnover growth',v:-8,src:'Consent'},{l:'Bank inflow trend',v:-7,src:'Consent'},{l:'MCA director status',v:-5,src:'Legal'},{l:'EPFO headcount trend',v:-4,src:'Consent'},{l:'DPD instances',v:+3,src:'Behavioural'}],
+  },
+];
+
+let currentBorrower=0;
+let currentSub='agents';
+let selectedAgent=null;
+let openCats={};
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function switchMain(id,btn){
+  document.querySelectorAll('.screen[id^="screen-"]').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('b-bar').style.display=id==='borrower'?'flex':'none';
+  if(id==='drift'){initDrift();}
+  if(id==='portfolio'){renderPortfolio();}
+}
+function switchSub(id,btn){
+  currentSub=id; selectedAgent=null;
+  document.querySelectorAll('.screen[id^="sub-"]').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sub-'+id).classList.add('active');
+  btn.classList.add('active');
+  renderSubContent();
+}
+function selectBorrower(idx,btn){
+  currentBorrower=idx; selectedAgent=null; openCats={};
+  document.querySelectorAll('.b-card').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBorrower();
+}
+
+// ══════════════════════════════════════════
+// SVG HELPERS
+// ══════════════════════════════════════════
+function spark(data,color,w,h){
+  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*w},${h-2-((v-mn)/rng)*(h-6)}`).join(' ');
+  const id='sg'+Math.random().toString(36).slice(2,6);
+  return `<svg width="${w}" height="${h}" style="overflow:visible"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity=".2"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${h} ${pts} ${w},${h}" fill="url(#${id})"/><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 3px ${color}88)"/></svg>`;
+}
+
+function buildGauge(score,size){
+  const cx=size/2,cy=size/2+8,R=size*0.37;
+  const toR=d=>d*Math.PI/180;
+  const arc=(sa,sw)=>{const s=toR(sa),e=toR(sa+sw);const x1=cx+R*Math.cos(s),y1=cy+R*Math.sin(s),x2=cx+R*Math.cos(e),y2=cy+R*Math.sin(e);return `M${x1},${y1} A${R},${R} 0 ${sw>180?1:0},1 ${x2},${y2}`;};
+  const SA=-210,ST=240,fill=ST*(score/100),col=rC(score);
+  const nA=toR(SA+fill);
+  const tks=[0,25,50,75,100].map(v=>{const a=toR(SA+(v/100)*ST);return `<line x1="${cx+(R+7)*Math.cos(a)}" y1="${cy+(R+7)*Math.sin(a)}" x2="${cx+(R+13)*Math.cos(a)}" y2="${cy+(R+13)*Math.sin(a)}" stroke="${C.muted}" stroke-width="1.5"/>`;}).join('');
+  return `<svg width="${size}" height="${size*.78}" style="overflow:visible"><path d="${arc(SA,ST)}" fill="none" stroke="${C.border}" stroke-width="9" stroke-linecap="round"/><path d="${arc(SA,fill)}" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" style="filter:drop-shadow(0 0 7px ${col}99)"/>${tks}<line x1="${cx}" y1="${cy}" x2="${cx+(R*.7)*Math.cos(nA)}" y2="${cy+(R*.7)*Math.sin(nA)}" stroke="${col}" stroke-width="2.5" stroke-linecap="round" style="filter:drop-shadow(0 0 5px ${col})"/><circle cx="${cx}" cy="${cy}" r="5" fill="${col}" style="filter:drop-shadow(0 0 5px ${col})"/><text x="${cx}" y="${cy-12}" text-anchor="middle" fill="${col}" style="font-size:30px;font-weight:900;font-family:var(--mono)">${score}</text><text x="${cx}" y="${cy+4}" text-anchor="middle" fill="${C.muted}" style="font-size:9px;font-family:var(--sans)">/100 · Health</text><text x="${cx-R}" y="${cy+22}" text-anchor="middle" fill="${C.red}" style="font-size:8px;font-family:var(--mono)">RISK</text><text x="${cx+R}" y="${cy+22}" text-anchor="middle" fill="${C.green}" style="font-size:8px;font-family:var(--mono)">SAFE</text></svg>`;
+}
+
+// ══════════════════════════════════════════
+// IQR CONFIDENCE TRACK
+// ══════════════════════════════════════════
+function buildIQR(feat){
+  const col = sC(feat.risk);
+  // pos = 0–100 on the track
+  const markerLeft = Math.max(2,Math.min(96,feat.pos));
+  return `<div class="iqr-track">
+    <div class="iqr-zone" style="left:25%;right:25%"></div>
+    <div class="iqr-marker" style="left:${markerLeft}%;background:${col};box-shadow:0 0 6px ${col}88"></div>
+    <span class="iqr-tick" style="left:25%">Q1</span>
+    <span class="iqr-tick" style="left:50%">Mdn</span>
+    <span class="iqr-tick" style="left:75%">Q3</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:12px">
+    <span style="font-size:8.5px;color:var(--muted);font-family:var(--mono)">${feat.q1}</span>
+    <span style="font-size:8.5px;color:var(--muted);font-family:var(--mono)">${feat.median}</span>
+    <span style="font-size:8.5px;color:var(--muted);font-family:var(--mono)">${feat.q3}</span>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// META BAR (freshness / coverage / confidence)
+// ══════════════════════════════════════════
+function buildMetaBars(def){
+  const f=def.freshness, cv=def.coverage, cn=def.confidence;
+  const isED=def.sourceType==='event_driven';
+
+  if(isED){
+    // Event-driven: freshness = crawl recency. Coverage & Confidence not meaningful in ML sense.
+    const crawl=def.crawlStatus||{};
+    return `<div class="meta-bar-wrap">
+      <div class="meta-bar-item">
+        <div class="lbl">Data Freshness</div>
+        <div style="font-size:18px;font-weight:900;color:${f.score>=80?C.green:f.score>=60?C.amber:C.red};font-family:var(--mono)">${f.score}%</div>
+        <div style="height:4px;background:var(--border);border-radius:2px;margin:6px 0">
+          <div style="height:100%;width:${f.score}%;background:${f.score>=80?C.green:f.score>=60?C.amber:C.red};border-radius:2px"></div>
+        </div>
+        <div style="font-size:9px;color:var(--muted)">Last crawl: ${f.latestDate}</div>
+        <div style="font-size:9px;color:var(--slate);margin-top:2px">${f.latestEvent}</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4;border-top:1px solid var(--border);padding-top:5px">${f.note}</div>
+      </div>
+      <div class="meta-bar-item" style="grid-column:span 2">
+        <div class="lbl">Signal Logic</div>
+        <div style="background:var(--hi2);border-radius:7px;padding:9px 11px;margin-top:6px;border:1px solid var(--border)">
+          <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:6px">No events = Healthy. Absence is the signal.</div>
+          <div style="font-size:9px;color:var(--slate);line-height:1.7;margin-bottom:6px">This is an event-driven agent. Coverage and Confidence in the ML sense do not apply. The agent scores 100 when no adverse events are found. Score only drops when a real event is detected and its configured weight is applied.</div>
+          <div style="font-size:9px;font-weight:700;color:var(--navy);margin-bottom:4px">Weight redistribution</div>
+          <div style="font-size:9px;color:var(--slate);line-height:1.6">If the data source is <strong>unavailable</strong> (crawl failure, not just clean data), this agent is marked absent and its base weight is redistributed proportionally to the other active agents. A clean result keeps the weight in place.</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="meta-bar-wrap">
+    <div class="meta-bar-item">
+      <div class="lbl">Freshness</div>
+      <div style="font-size:18px;font-weight:900;color:${f.score>=80?C.green:f.score>=60?C.amber:C.red};font-family:var(--mono)">${f.score}%</div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin:6px 0">
+        <div style="height:100%;width:${f.score}%;background:${f.score>=80?C.green:f.score>=60?C.amber:C.red};border-radius:2px"></div>
+      </div>
+      <div style="font-size:9px;color:var(--muted)">Latest: ${f.latestDate}</div>
+      <div style="font-size:9px;color:var(--slate);margin-top:2px">${f.latestEvent}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4;border-top:1px solid var(--border);padding-top:5px">
+        <strong style="color:var(--slate)">What is Freshness?</strong> How recent is the data feeding this agent. Score = weighted recency of last data pull per feature.
+      </div>
+    </div>
+    <div class="meta-bar-item">
+      <div class="lbl">Coverage</div>
+      <div style="font-size:18px;font-weight:900;color:${cv.score>=80?C.green:cv.score>=60?C.amber:C.red};font-family:var(--mono)">${cv.score}%</div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin:6px 0">
+        <div style="height:100%;width:${cv.score}%;background:${cv.score>=80?C.green:cv.score>=60?C.amber:C.red};border-radius:2px"></div>
+      </div>
+      <div style="font-size:9px;color:var(--slate)">${cv.available} of ${cv.total} features have data</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4;border-top:1px solid var(--border);padding-top:5px">
+        <strong style="color:var(--slate)">What is Coverage?</strong> Of all features defined for this agent, how many have actual data available for this borrower.
+      </div>
+    </div>
+    <div class="meta-bar-item">
+      <div class="lbl">Confidence</div>
+      <div style="font-size:18px;font-weight:900;color:${cn.score>=80?C.green:cn.score>=60?C.amber:C.red};font-family:var(--mono)">${cn.score}%</div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin:6px 0">
+        <div style="height:100%;width:${cn.score}%;background:${cn.score>=80?C.green:cn.score>=60?C.amber:C.red};border-radius:2px"></div>
+      </div>
+      <div style="font-size:9px;color:var(--slate)">${cn.note}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4;border-top:1px solid var(--border);padding-top:5px">
+        <strong style="color:var(--slate)">What is Confidence?</strong> For each feature, where does this borrower's value lie within the IQR of the training population? Values outside IQR = lower confidence. Agent confidence = weighted avg across features.
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// RENDER FEATURE CATEGORY
+// ══════════════════════════════════════════
+function toggleCat(key){
+  openCats[key] = (openCats[key]===false) ? true : false;
+  renderDrillPanel(selectedAgent);
+}
+
+function buildIQR(f, accentColor){
+  const col = sC(f.risk);
+  const pos = Math.max(2, Math.min(97, f.pos));
+  return `<div style="margin:6px 0 2px">
+    <div style="position:relative;height:8px;background:var(--hi2);border-radius:4px;border:1px solid var(--border)">
+      <div style="position:absolute;left:25%;right:25%;top:0;bottom:0;background:${accentColor}18;border-radius:3px"></div>
+      <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:${accentColor}44;transform:translateX(-50%)"></div>
+      <div style="position:absolute;left:${pos}%;top:-3px;width:4px;height:14px;border-radius:2px;background:${col};transform:translateX(-50%);box-shadow:0 0 4px ${col}88"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:2px">
+      <span style="font-size:7px;color:var(--muted);font-family:var(--mono)">${f.q1}</span>
+      <span style="font-size:7px;color:var(--muted);font-family:var(--mono)">${f.median}</span>
+      <span style="font-size:7px;color:var(--muted);font-family:var(--mono)">${f.q3}</span>
+    </div>
+  </div>`;
+}
+
+function renderFeatures(features, color, agentScore){
+  return `<div style="display:flex;flex-direction:column;gap:6px;padding:4px 0">
+    ${features.map(f=>{
+      const vc    = sC(f.risk);
+      const isHB  = f.dir !== 'lb';
+      const dirC  = isHB ? C.blue : C.teal;
+      const dirTx = isHB ? '↑ higher is better' : '↓ lower is better';
+      const hasIQR = f.q1 && f.q1 !== '-';
+      // extract unit from parentheses in name e.g. "Revenue (₹ Cr TTM)" → name="Revenue", unit="₹ Cr TTM"
+      const nameMatch = f.name.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+      const cleanName = nameMatch ? nameMatch[1].trim() : f.name;
+      const unit      = f.unit || (nameMatch ? nameMatch[2] : '');
+      return `<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 12px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:${hasIQR?5:0}px">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--navy);line-height:1.3">${cleanName}</div>
+            <div style="display:flex;align-items:center;gap:5px;margin-top:3px">
+              ${unit?`<span style="font-size:8px;color:var(--muted);font-family:var(--mono)">${unit}</span><span style="font-size:8px;color:var(--border)">·</span>`:''}
+              <span style="font-size:8px;font-weight:600;color:${dirC}">${dirTx}</span>
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:900;color:${vc};font-family:var(--mono);line-height:1;flex-shrink:0">${f.val}</div>
+        </div>
+        ${hasIQR ? buildIQR(f, color) : ''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// CONSENT SCORING FLOW (architecture card)
+// ══════════════════════════════════════════
+function renderConsentFlow(def){
+  const ss = def.subScores;
+  const rows = [
+    {label:'GST Consent',    score:ss.gst,   weight:40, col:C.teal},
+    {label:'Bank Statement', score:ss.bank,  weight:35, col:C.blue},
+    {label:'Bureau',         score:ss.bureau,weight:25, col:C.purple},
+  ];
+  const fired = def.rules.filter(r=>r.triggered).length;
+  return `<div style="background:var(--hi2);border-bottom:1px solid var(--borderB);padding:12px 16px;display:flex;align-items:center;gap:10px">
+    ${rows.map(r=>`
+      <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center">
+        <div style="font-size:7.5px;color:var(--muted);margin-bottom:3px">${r.label} · ${r.weight}%</div>
+        <div style="font-size:18px;font-weight:900;color:${r.score>=70?C.green:r.score>=40?C.amber:C.red};font-family:var(--mono);line-height:1">${r.score}</div>
+        <div style="height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden">
+          <div style="height:100%;width:${r.score}%;background:${r.score>=70?C.green:r.score>=40?C.amber:C.red}"></div>
+        </div>
+      </div>`).join(`<div style="font-size:11px;color:var(--muted)">→</div>`)}
+    <div style="font-size:11px;color:var(--muted)">+</div>
+    <div style="background:#fff;border:1px solid var(--borderB);border-radius:8px;padding:8px 10px;text-align:center;min-width:60px">
+      <div style="font-size:7.5px;color:var(--muted);margin-bottom:3px">${fired} signals fired</div>
+      <div style="font-size:18px;font-weight:900;color:${rC(ss.final)};font-family:var(--mono);line-height:1">${ss.final}</div>
+      <div style="font-size:7px;color:var(--muted);margin-top:2px">final</div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// MANAGEMENT FEATURE RENDERER (simple blocks)
+// ══════════════════════════════════════════
+function renderMgmtFeatures(features, color){
+  return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0">
+    ${features.map(f=>{
+      const sc  = f.rangeScore;
+      const scC = sc>=70?C.green:sc>=40?C.amber:C.red;
+      return `<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;border-top:3px solid ${scC}">
+        <div style="font-size:9.5px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.3">${f.name}</div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:6px;margin-bottom:8px">
+          <div style="font-size:15px;font-weight:900;color:${sC(f.risk)};font-family:var(--mono);line-height:1">${f.val}</div>
+          <div style="font-size:7.5px;color:var(--muted);background:var(--hi2);border-radius:3px;padding:1px 6px;flex-shrink:0">wt ${f.weight}%</div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="height:100%;width:${sc}%;background:${scC};border-radius:2px"></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+
+function renderRangeFeatures(features, color, subScore){
+  return `<div style="display:flex;flex-direction:column;gap:6px;padding:2px 0">
+    ${features.map(f=>{
+      const sc  = f.rangeScore;
+      const scC = sc>=70?C.green:sc>=40?C.amber:C.red;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border-radius:8px;border:1px solid var(--border);border-left:3px solid ${scC}">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:2px">${f.name}</div>
+          <div style="font-size:8px;color:var(--muted)">${f.brief}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;min-width:80px">
+          <div style="font-size:13px;font-weight:900;color:${sC(f.risk)};font-family:var(--mono)">${f.val}</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:3px;justify-content:flex-end">
+            <div style="width:50px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+              <div style="height:100%;width:${sc}%;background:${scC};border-radius:2px"></div>
+            </div>
+            <span style="font-size:8px;font-weight:800;color:${scC};font-family:var(--mono)">${sc}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+function renderNewsCategories(def){
+  const cats = def.newsCategories.map(cat=>{
+    const catSentiment = Math.round(cat.articles.reduce((s,a)=>s+a.nlpScore,0) / cat.articles.length);
+    return {...cat, catSentiment};
+  });
+
+  return cats.map(cat=>{
+    const sentCol = cat.catSentiment>60?C.red:cat.catSentiment>35?C.amber:C.green;
+    const pill    = cat.catSentiment>60?'pr':cat.catSentiment>35?'pa':'pg';
+    return `<div class="news-cat">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:3px;height:22px;background:${cat.color};border-radius:2px;flex-shrink:0"></div>
+          <div>
+            <div style="font-size:10.5px;font-weight:800;color:${cat.color}">${cat.name}</div>
+            <div style="font-size:8px;color:var(--muted)">Weight: <strong style="color:var(--navy)">${cat.weight}%</strong> &nbsp;·&nbsp; NLP avg: <strong style="color:${sentCol}">${cat.catSentiment}/100</strong></div>
+          </div>
+        </div>
+        <span class="pill ${pill}">${cat.catSentiment>60?'HIGH RISK':cat.catSentiment>35?'MODERATE':'LOW'}</span>
+      </div>
+      ${cat.articles.map(a=>`<div style="font-size:9px;color:var(--slate);padding:3px 7px;border-left:2px solid ${cat.color}55;margin-bottom:2px">${a.headline} <span style="color:var(--muted)">· ${a.source}</span></div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+
+// ══════════════════════════════════════════
+// BUREAU FEATURE RENDERER (supervised, no peer IQR)
+// ══════════════════════════════════════════
+function renderBureauFeatures(features, color){
+  return `<div style="display:flex;flex-direction:column;gap:6px;padding:2px 0">
+    ${features.map(f=>{
+      const isRisk = (f.contrib||0) > 0;
+      const cc = isRisk ? C.red : C.green;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border-radius:8px;border:1px solid var(--border);border-left:3px solid ${cc}">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:2px">${f.name}</div>
+          <div style="font-size:8px;color:var(--muted)">${f.brief}</div>
+        </div>
+        <div style="font-size:13px;font-weight:900;color:${sC(f.risk)};font-family:var(--mono);flex-shrink:0">${f.val}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// RENDER CONSENT RULES
+// ══════════════════════════════════════════
+function renderConsentRules(def){
+  const triggered = def.rules.filter(r=>r.triggered);
+  const clear     = def.rules.filter(r=>!r.triggered);
+  const totalPenalty = triggered.reduce((s,r)=>s+(r.penalty||0),0);
+
+  return `<div style="padding:10px 13px 12px">
+    ${triggered.length ? `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:8px;font-weight:800;color:${C.red};letter-spacing:.07em;text-transform:uppercase">⚠ ${triggered.length} Signals Triggered</div>
+        <div style="font-size:8px;color:${C.red};font-weight:700;background:${C.redD};border-radius:4px;padding:2px 8px">Total impact: −${totalPenalty} pts on consent score</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+        ${triggered.map(r=>{
+          const pct = Math.round((r.penalty / (def.subScores.baseScore||44)) * 100);
+          return `<div style="background:${C.redD};border:1px solid ${C.red}28;border-radius:8px;padding:9px 11px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px">
+              <div style="font-size:9.5px;font-weight:800;color:${C.red};line-height:1.3">${r.title}</div>
+              <div style="text-align:right;flex-shrink:0">
+                <div style="font-size:11px;font-weight:900;color:${C.red};font-family:var(--mono)">−${r.penalty} pts</div>
+                <div style="font-size:7.5px;color:${C.red};opacity:.75">−${pct}% of score</div>
+              </div>
+            </div>
+            <div style="font-size:8.5px;color:var(--slate);line-height:1.5;border-left:2px solid ${C.red}55;padding-left:7px">${r.scenario}</div>
+          </div>`;
+        }).join('')}
+      </div>` : ''}
+
+    ${clear.length ? `
+      <div style="font-size:8px;font-weight:800;color:${C.green};letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px">✓ ${clear.length} Signals Clear</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        ${clear.map(r=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+            <div style="width:6px;height:6px;background:${C.green};border-radius:50%;flex-shrink:0"></div>
+            <div style="flex:1">
+              <div style="font-size:9px;font-weight:600;color:var(--slate)">${r.title}</div>
+              <div style="font-size:8px;color:var(--muted);margin-top:1px">${r.scenario.split('—')[0].trim()}</div>
+            </div>
+            <div style="font-size:8px;color:var(--muted);flex-shrink:0">no impact · −${r.penalty} pts if fired</div>
+          </div>`).join('')}
+      </div>` : ''}
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// RENDER MANAGEMENT RULES
+// ══════════════════════════════════════════
+function renderMgmtRules(def){
+  const totalScore=def.mgmtRules.reduce((s,r)=>s+(r.severity*r.weight),0);
+  return `
+    <div style="margin-bottom:14px;padding:10px 13px;background:var(--hi2);border-radius:8px;border:1px solid var(--borderB)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:10.5px;color:var(--slate)">Mgmt Risk Score = Σ(Severity_i × Weight_i)</div>
+        <div style="font-size:16px;font-weight:900;color:${totalScore>30?C.red:totalScore>15?C.amber:C.green};font-family:var(--mono)">${Math.round(totalScore)}/100</div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin-top:4px">Weights configured in Admin Portal · Severity 0=None, 1=Critical</div>
+    </div>
+    ${def.mgmtRules.map(r=>`
+      <div style="background:var(--hi);border-radius:8px;padding:11px 13px;margin-bottom:8px;border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:${r.color}">${r.name}</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:1px">Weight: ${r.weight}% · Severity: ${r.severity} · Contribution: ${Math.round(r.severity*r.weight)}</div>
+          </div>
+          <span style="font-size:12px;font-weight:800;color:${r.color};font-family:var(--mono)">${r.value}</span>
+        </div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-bottom:6px"><div style="height:100%;width:${r.severity*100}%;background:${r.color};border-radius:3px"></div></div>
+        <div style="font-size:10px;color:var(--slate)">${r.desc}</div>
+      </div>`).join('')}`;
+}
+
+// ══════════════════════════════════════════
+// BUILD CATEGORY SECTION
+// ══════════════════════════════════════════
+function buildCatSection(cat, color, isOpen, agentScore){
+  return `<div class="cat-section">
+    <div class="cat-header" onclick="toggleCat('${cat.key}')" style="${isOpen?'background:var(--hi2)':''}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;font-weight:800;color:${isOpen?color:'var(--white)'};">${cat.name}</span>
+        <span style="font-size:9px;color:var(--muted)">${cat.features.length} features</span>
+      </div>
+      <span style="font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>
+    </div>
+    <div style="display:${isOpen?'block':'none'}">
+      <div class="cat-body" style="padding:10px 12px 14px">${renderFeatures(cat.features, color, agentScore)}</div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// RENDER DRILL PANEL
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// WEIGHT TABLE — shown for rule-based & semi-supervised agents
+// ══════════════════════════════════════════
+function renderWeightTable(def){
+  // Unsupervised agents (legal, compliance): feature list grouped by category
+  if(def.approach==='unsupervised'){
+    const col=def.color;
+    const allFeats=[];
+    (def.categories||[]).forEach(cat=>
+      (cat.features||[]).forEach(f=>allFeats.push({...f, catName:cat.name}))
+    );
+    const maxW=Math.max(...allFeats.map(f=>f.weight||0),1);
+    // Group by catName
+    const groups=[];
+    (def.categories||[]).forEach(cat=>{
+      if((cat.features||[]).length) groups.push({name:cat.name, features:cat.features});
+    });
+    return `<div style="display:flex;flex-direction:column;gap:10px">
+      ${groups.map(g=>`
+        <div>
+          <div style="font-size:9px;font-weight:800;color:${col};text-transform:uppercase;letter-spacing:.07em;padding:0 2px;margin-bottom:5px">${g.name}</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            ${g.features.map(f=>{
+              const riskCol=f.risk==='high'?C.red:f.risk==='med'?C.amber:C.green;
+              const w=f.weight||0;
+              return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:#fff;border-radius:7px;border:1px solid var(--border);border-left:3px solid ${riskCol}">
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:9.5px;font-weight:600;color:var(--slate)">${f.name}</div>
+                  <div style="font-size:8px;color:var(--muted);margin-top:1px">${f.brief||''}</div>
+                </div>
+                <div style="font-size:10.5px;font-weight:800;color:${riskCol};font-family:var(--mono);width:52px;text-align:right;flex-shrink:0">${f.val}</div>
+                <div style="width:72px;flex-shrink:0">
+                  <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:2px">
+                    <div style="height:100%;width:${Math.round(w/maxW*100)}%;background:${col};border-radius:2px"></div>
+                  </div>
+                  <div style="font-size:8px;font-weight:800;color:${col};text-align:right;font-family:var(--mono)">wt: ${w}</div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  // Semi-supervised (consent, news): category weights
+  if(def.categoryWeights){
+    const col=def.color;
+    const isNews=def.approach==='semisupervised'&&!!def.newsCategories;
+    return `<div style="background:${def.colorD};border:1px solid ${col}28;border-radius:10px;padding:13px 14px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="background:${col}22;border-radius:6px;padding:3px 9px;font-size:9px;font-weight:800;color:${col};letter-spacing:.07em;text-transform:uppercase">${isNews?'⚖ Category Weights':'⚙ Model Structure · Weights'}</div>
+        <div style="font-size:8.5px;color:var(--muted)">${isNews?'Admin-configured weights · NLP model scores each article · score = 100 − Σ(weight × avg sentiment)':'Sub-model weights + rule overlay · configured in admin portal'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${def.categoryWeights.map(cw=>{
+          const hasType=!!cw.type;
+          const typeCol=cw.type&&(cw.type==='Rule-based'||cw.type==='Rules overlay')?C.amber:col;
+          return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,0.5);border-radius:7px;border:1px solid ${col}18">
+            <div style="flex:1">
+              <div style="font-size:10px;font-weight:700;color:var(--slate)">${cw.category}</div>
+              <div style="font-size:8px;color:var(--muted);margin-top:1px">${cw.note}</div>
+            </div>
+            ${hasType?`<span style="background:${typeCol}18;border-radius:4px;padding:2px 7px;font-size:8px;font-weight:700;color:${typeCol};flex-shrink:0">${cw.type}</span>`:''}
+            ${cw.weight!=null
+              ?`<div style="width:90px;flex-shrink:0">
+                  <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:2px">
+                    <div style="height:100%;width:${cw.weight}%;background:${col};border-radius:3px"></div>
+                  </div>
+                  <div style="font-size:9.5px;font-weight:800;color:${col};text-align:right;font-family:var(--mono)">${cw.weight}%</div>
+                </div>`
+              :`<div style="width:90px;font-size:8.5px;color:var(--muted);text-align:right;flex-shrink:0">overlay</div>`
+            }
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  return '';
+}
+
+function renderDrillPanel(agentKey){
+  const def=AGENT_DEFS[agentKey];
+  if(!def){document.getElementById('agents-wrap').innerHTML=renderAgentGrid();return;}
+
+  const b=BORROWERS[currentBorrower];
+  const agScore=b.agentScores[agentKey];
+  const modelBadge={supervised:'pb',semisupervised:'pt',rulebased:'pa',unsupervised:'pa'}[def.approach]||'pa';
+  const modelLabel={supervised:'Supervised ML',semisupervised:'Semi-Supervised',rulebased:'Rule-Based',unsupervised:'Unsupervised'}[def.approach]||'Unsupervised';
+
+  let catHTML='';
+  const weightTableHTML=(def.approach==='semisupervised'&&agentKey!=='consent'||def.approach==='unsupervised')?renderWeightTable(def):'';
+
+  if(def.approach==='semisupervised'&&agentKey==='consent'){
+    // Architecture flow card first
+    catHTML += renderConsentFlow(def);
+
+    def.categories.forEach(cat=>{
+      const isOpen = openCats[cat.key] !== false;
+      const chevron = `<span style="font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>`;
+      const typeTag = cat.type==='supervised'
+        ? `<span style="font-size:7.5px;font-weight:700;color:${C.purple};background:${C.purpleD};border-radius:3px;padding:1px 5px">Supervised ML</span>`
+        : `<span style="font-size:7.5px;font-weight:700;color:${C.teal};background:${C.tealD};border-radius:3px;padding:1px 5px">Range-Based</span>`;
+      const subScoreChip = cat.subScore!=null
+        ? `<span style="font-size:8px;color:var(--muted)">sub-score: <strong style="color:${rC(cat.subScore)};font-family:var(--mono)">${cat.subScore}</strong></span>`
+        : '';
+
+      const inner = cat.type==='range'
+        ? renderRangeFeatures(cat.features, def.color, cat.subScore)
+        : cat.type==='supervised'
+          ? renderBureauFeatures(cat.features, def.color)
+          : renderFeatures(cat.features, def.color, agScore);
+
+      catHTML += `<div class="cat-section">
+        <div class="cat-header" onclick="toggleCat('${cat.key}')" style="${isOpen?'background:var(--hi2)':''}">
+          <div style="display:flex;align-items:center;gap:8px">
+            ${typeTag}
+            <span style="font-size:11px;font-weight:800;color:${isOpen?def.color:'var(--white)'}">${cat.name}</span>
+            <span style="font-size:9px;color:var(--muted)">${cat.features.length} features</span>
+            ${subScoreChip}
+          </div>
+          ${chevron}
+        </div>
+        <div style="display:${isOpen?'block':'none'}">
+          <div class="cat-body" style="padding:10px 12px 14px">${inner}</div>
+        </div>
+      </div>`;
+    });
+
+    // Triangulation rules
+    catHTML += `<div class="cat-section">
+      <div class="cat-header" style="background:var(--hi2)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:7.5px;font-weight:700;color:${C.red};background:${C.redD};border-radius:3px;padding:1px 5px">Score Overlay</span>
+          <span style="font-size:11px;font-weight:800;color:var(--navy)">Combination Rules · ${def.rules.filter(r=>r.triggered).length} of ${def.rules.length} Triggered</span>
+        </div>
+      </div>
+      <div class="cat-body" style="background:var(--panel)">${renderConsentRules(def)}</div>
+    </div>`;
+  } else if(agentKey==='news'){
+    catHTML=`<div style="padding:2px 0">${renderNewsCategories(def)}</div>`;
+  } else if(def.approach==='unsupervised'){
+    // management has categories with rangeScore features — render them
+    if(agentKey==='management'){
+      (def.categories||[]).forEach(cat=>{
+        const isOpen=openCats[cat.key]!==false;
+        const chevron=`<span style="font-size:10px;color:var(--muted);display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>`;
+        catHTML+=`<div class="cat-section">
+          <div class="cat-header" onclick="toggleCat('${cat.key}')" style="${isOpen?'background:var(--hi2)':''}">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:11px;font-weight:800;color:${isOpen?def.color:'var(--white)'}">${cat.name}</span>
+              <span style="font-size:9px;color:var(--muted)">${cat.features.length} signals</span>
+            </div>${chevron}
+          </div>
+          <div style="display:${isOpen?'block':'none'}">
+            <div class="cat-body" style="padding:10px 12px 14px">${renderMgmtFeatures(cat.features, def.color)}</div>
+          </div>
+        </div>`;
+      });
+    } else {
+      catHTML='';
+    }
+  } else if(def.approach==='rulebased'&&agentKey==='_management_disabled'){
+    catHTML+=`<div style="padding:14px 16px">${renderMgmtRules(def)}</div>`;
+  } else {
+    (def.categories||[]).forEach(cat=>{
+      const isOpen=openCats[cat.key]!==false;
+      catHTML+=buildCatSection(cat, def.color, isOpen, agScore);
+    });
+  }
+
+  // Left col: compact agent cards
+  const agentList=['financial','behavioural','consent','news','legal','compliance','management'];
+  const agentCards=agentList.map(key=>{
+    const d=AGENT_DEFS[key];
+    const sc=b.agentScores[key];
+    const isActive=key===agentKey;
+    return `<div style="background:${isActive?d.colorD+'CC':C.hi};border:1px solid ${isActive?d.color+'88':C.border};border-radius:9px;padding:9px 12px;cursor:pointer;transition:all .2s${isActive?`;outline:2px solid ${d.color}44;outline-offset:1px`:''}" onclick="openAgent('${key}')">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:15px">${d.icon}</span>
+          <div>
+            <div style="font-size:10px;font-weight:800;color:${isActive?d.color:C.slate}">${d.name.replace(' Agent','')}</div>
+            <span class="pill ${({supervised:'pb',semisupervised:'pt',rulebased:'pa'})[d.approach]}" style="font-size:7.5px;padding:1px 5px">${({supervised:'ML',semisupervised:'Semi-Sup',rulebased:'Rule-Based',unsupervised:'Unsupervised'})[d.approach]||d.approach}</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:17px;font-weight:900;color:${rC(sc)};font-family:var(--mono);line-height:1">${sc}</div>
+          <div style="font-size:8px;font-weight:800;color:${rC(sc)}">${rL(sc)}</div>
+        </div>
+      </div>
+      ${isActive?`<div style="margin-top:5px;padding-top:5px;border-top:1px solid ${d.color}22">
+          <div style="font-size:7.5px;color:var(--muted)">
+            📅 <strong style="color:var(--slate)">${d.eventDate?d.eventDate.label:'—'}</strong>
+            &nbsp;·&nbsp; 🔄 <strong style="color:var(--slate)">${d.lastUpdated?d.lastUpdated.date:'—'}</strong>
+          </div>
+        </div>`:''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('agents-wrap').innerHTML=`
+    <div class="drill-wrap">
+      <div class="drill-left">
+        <div style="font-size:9.5px;font-weight:800;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">⬡ Agents</div>
+        ${agentCards}
+        <button onclick="selectedAgent=null;renderAgentsView();document.getElementById('score-history-wrap').innerHTML=renderScoreHistory(null)" style="background:var(--hi);color:var(--slate);border:1px solid var(--border);border-radius:7px;padding:7px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:var(--sans);width:100%">← All Agents Overview</button>
+        <div style="background:var(--hi2);border-radius:9px;padding:10px 12px;border:1px solid var(--borderB)">
+          <div style="font-size:9px;font-weight:800;color:var(--gold);margin-bottom:5px;letter-spacing:.06em">⚙️ ENSEMBLE FORMULA</div>
+          <code style="color:var(--teal);font-family:var(--mono);font-size:8.5px;display:block;line-height:1.7">W_eff = BaseWt × Conf × Covg × Fresh<br>PD_final = MetaModel(PD×W_eff…)</code>
+        </div>
+      </div>
+      <div class="drill-panel">
+        <div class="drill-header">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span style="font-size:18px">${def.icon}</span>
+              <div>
+                <div style="font-size:12.5px;font-weight:800;color:${def.color}">${def.name}</div>
+                <div style="display:flex;gap:6px;align-items:center;margin-top:2px"><span class="pill ${modelBadge}">${modelLabel}</span><span style="font-size:9px;color:var(--muted)">${def.modelType.split('·')[1]||''}</span></div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:20px;font-weight:900;color:${rC(agScore)};font-family:var(--mono);line-height:1">${agScore}<span style="font-size:10px;color:var(--muted)">/100</span></div>
+              <span class="pill ${rPill(agScore)}">${rL(agScore)} RISK</span>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--slate);line-height:1.55;padding:7px 10px;background:var(--hi2);border-radius:6px;margin-bottom:8px">${def.description}</div>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;padding:6px 10px;background:var(--hi);border-radius:7px;border:1px solid var(--border)">
+            <span style="font-size:9px;color:var(--muted)">📅 <strong style="color:var(--navy)">${def.eventDate?def.eventDate.label:'—'}</strong> <span style="color:var(--muted)">${def.eventDate?'· '+def.eventDate.note:''}</span></span>
+            <div style="width:1px;height:12px;background:var(--border)"></div>
+            <span style="font-size:9px;color:var(--muted)">🔄 Updated <strong style="color:var(--navy)">${def.lastUpdated?def.lastUpdated.date:'—'}</strong></span>
+          </div>
+          <div style="display:flex;gap:8px">
+            ${[
+              ['⏱ Freshness',def.freshness.score,C.blue,`Latest: ${def.freshness.latestDate}`,`Of all features, how recently was data pulled. Latest event: ${def.freshness.latestEvent}`],
+              ['📦 Coverage',def.coverage.score,C.teal,`${def.coverage.available}/${def.coverage.total} features`,`How many of the defined features have actual data for this borrower.`],
+              ['🎯 Confidence',def.confidence.score,C.purple,`IQR position`,`Weighted avg of how far each feature value lies inside/outside the training IQR. Outside IQR = low confidence.`]
+            ].map(([lbl,val,col,sub,tip])=>`
+              <div style="flex:1;background:var(--hi);border-radius:7px;padding:8px 10px;border:1px solid var(--border)">
+                <div style="font-size:8.5px;color:var(--muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">${lbl}</div>
+                <div style="font-size:17px;font-weight:900;color:${col};font-family:var(--mono);line-height:1">${val}%</div>
+                <div style="height:3px;background:var(--border);border-radius:2px;margin:5px 0"><div style="height:100%;width:${val}%;background:${col};border-radius:2px"></div></div>
+                <div style="font-size:8.5px;color:${col};margin-bottom:3px">${sub}</div>
+                <div style="font-size:8px;color:var(--muted);line-height:1.4">${tip}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+        ${weightTableHTML}
+        ${catHTML}
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// RENDER AGENT GRID
+// ══════════════════════════════════════════
+function renderAgentGrid(activeKey){
+  const b=BORROWERS[currentBorrower];
+  const agents=[
+    {key:'financial',def:AGENT_DEFS.financial},
+    {key:'behavioural',def:AGENT_DEFS.behavioural},
+    {key:'consent',def:AGENT_DEFS.consent},
+    {key:'news',def:AGENT_DEFS.news},
+    {key:'legal',def:AGENT_DEFS.legal},
+    {key:'compliance',def:AGENT_DEFS.compliance},
+    {key:'management',def:AGENT_DEFS.management},
+  ];
+
+  const cards=agents.map(({key,def})=>{
+    const sc=b.agentScores[key];
+    const isActive=key===activeKey;
+    const modelBadge={supervised:'pb',semisupervised:'pt',unsupervised:'pa'}[def.approach]||'pa';
+    const modelLabel={supervised:'ML',semisupervised:'Semi-Sup',unsupervised:'Unsupervised'}[def.approach]||'';
+    return `<div style="background:${isActive?def.colorD+'CC':C.hi};border:1px solid ${isActive?def.color+'88':C.border};border-radius:9px;padding:9px 12px;cursor:pointer;transition:all .2s${isActive?`;outline:2px solid ${def.color}44;outline-offset:1px`:''}" onclick="openAgent('${key}')">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:15px">${def.icon}</span>
+          <div>
+            <div style="font-size:10px;font-weight:800;color:${isActive?def.color:C.slate}">${def.name.replace(' Agent','')}</div>
+            <span class="pill ${modelBadge}" style="font-size:7.5px;padding:1px 5px">${modelLabel}</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:17px;font-weight:900;color:${rC(sc)};font-family:var(--mono);line-height:1">${sc}</div>
+          <div style="font-size:8px;font-weight:800;color:${rC(sc)}">${rL(sc)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div style="display:grid;grid-template-columns:260px 1fr;gap:14px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="font-size:9.5px;font-weight:800;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px">⬡ Agents</div>
+      ${cards}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;margin-bottom:12px">Agent Score Overview</div>
+        ${agents.map(({key,def})=>{const sc=b.agentScores[key];return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+          <div style="width:100px;font-size:9.5px;color:var(--slate);white-space:nowrap">${def.icon} ${def.name.replace(' Agent','')}</div>
+          <div style="flex:1;height:14px;background:var(--hi);border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${sc}%;background:${def.color};border-radius:4px;box-shadow:0 0 5px ${def.color}44"></div>
+          </div>
+          <div style="width:30px;font-size:10.5px;font-family:var(--mono);font-weight:800;color:${rC(sc)};text-align:right">${sc}</div>
+          <span class="pill ${rPill(sc)}" style="width:62px;text-align:center">${rL(sc)}</span>
+        </div>`;}).join('')}
+      </div>
+      <div style="background:var(--hi2);border-radius:9px;padding:11px 14px;border:1px solid var(--borderB)">
+        <div style="font-size:9px;font-weight:800;color:var(--gold);margin-bottom:5px;letter-spacing:.06em">⚙️ ENSEMBLE FORMULA</div>
+        <code style="color:var(--teal);font-family:var(--mono);font-size:8.5px;display:block;line-height:1.7">W_eff = BaseWt × Conf × Covg × Fresh<br>PD_final = MetaModel(PD×W_eff…)</code>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// OPEN AGENT
+// ══════════════════════════════════════════
+function openAgent(key){
+  selectedAgent=key;
+  openCats={};
+  const def=AGENT_DEFS[key];
+  if(def.categories&&def.categories[0]) openCats[def.categories[0].key]=true;
+  renderDrillPanel(key);
+  document.getElementById('score-history-wrap').innerHTML=renderScoreHistory(key);
+}
+
+// ══════════════════════════════════════════
+// RENDER AGENTS VIEW
+// ══════════════════════════════════════════
+function renderAgentsView(){
+  document.getElementById('agents-wrap').innerHTML=renderAgentGrid(null);
+}
+
+// ══════════════════════════════════════════
+// BORROWER HEADER
+// ══════════════════════════════════════════
+function renderBorrowerHeader(){
+  const b=BORROWERS[currentBorrower];
+  const fields=[[b.loan,'Outstanding'],[b.product,'Product'],[b.vintage,'Vintage'],[b.sector,'Sector']];
+  const cd=getCompositeDates();
+  const dc=getDecisionConfidence();
+  const scoreCol=rC(b.score);
+  document.getElementById('b-header').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+
+      <!-- Left: name + fields -->
+      <div>
+        <div style="font-size:19px;font-weight:800;letter-spacing:-.02em;color:var(--navy);margin-bottom:8px">${b.name}</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+          ${fields.map(([v,k])=>`<div><div class="lbl">${k}</div><div style="font-size:11.5px;font-weight:600;color:var(--slate)">${v}</div></div>`).join('')}
+          <div style="width:1px;height:28px;background:var(--border)"></div>
+          <div style="font-size:9.5px;color:var(--muted)">
+            <span style="margin-right:10px">📅 <strong style="color:var(--slate)">${cd.eventDate.label}</strong></span>
+            <span>🔄 Updated <strong style="color:var(--slate)">${cd.lastUpdated}</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: scores block -->
+      <div style="display:flex;gap:10px;align-items:stretch">
+
+        <!-- Overall Score gauge -->
+        <div style="background:${rD(b.score)};border:1px solid ${scoreCol}33;border-radius:12px;padding:12px 16px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-width:110px">
+          <div style="font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Health Score</div>
+          ${buildGauge(b.score,110)}
+          <div style="margin-top:4px"><span class="pill ${rPill(b.score)}" style="font-size:9px">${rL(b.score)}</span></div>
+          <div style="font-size:7.5px;color:var(--muted);margin-top:4px">Higher = healthier</div>
+        </div>
+
+        <!-- Decision Confidence -->
+        <div style="background:#FFFFFF;border:1px solid var(--border);border-radius:12px;padding:12px 16px;min-width:180px;box-shadow:0 1px 4px rgba(15,41,82,.06)">
+          <div style="font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Decision Confidence</div>
+          <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:8px">
+            <div style="font-size:28px;font-weight:900;color:${dc.color};font-family:var(--mono);line-height:1">${dc.combined}</div>
+            <div style="font-size:10px;color:var(--muted)">/100</div>
+            <span class="pill ${dc.combined>=80?'pg':dc.combined>=65?'pa':'pr'}" style="margin-left:4px">${dc.grade}</span>
+          </div>
+          <!-- ML agents: freshness + coverage + confidence -->
+          <div style="margin-bottom:6px">
+            <div style="font-size:7.5px;font-weight:700;color:${C.blue};text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">ML Agents · 70% weight</div>
+            ${[['Freshness',dc.avgFresh,C.blue],['Coverage',dc.avgCovg,C.teal],['Confidence',dc.avgConf,C.purple]].map(([l,v,col])=>
+              '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
+              + '<div style="font-size:8px;color:var(--muted);width:62px">'+l+'</div>'
+              + '<div style="flex:1;height:3px;background:var(--border);border-radius:2px"><div style="height:100%;width:'+v+'%;background:'+col+';border-radius:2px"></div></div>'
+              + '<div style="font-size:8px;font-family:var(--mono);font-weight:700;color:'+col+';width:28px;text-align:right">'+v+'%</div>'
+              + '</div>'
+            ).join('')}
+          </div>
+          <!-- Event-driven agents: crawl freshness only -->
+          <div style="border-top:1px solid var(--border);padding-top:6px">
+            <div style="font-size:7.5px;font-weight:700;color:${C.amber};text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Event-Driven Agents · 30% weight</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+              <div style="font-size:8px;color:var(--muted);width:62px">Crawl fresh</div>
+              <div style="flex:1;height:3px;background:var(--border);border-radius:2px"><div style="height:100%;width:${dc.edAvg}%;background:${C.amber};border-radius:2px"></div></div>
+              <div style="font-size:8px;font-family:var(--mono);font-weight:700;color:${C.amber};width:28px;text-align:right">${dc.edAvg}%</div>
+            </div>
+            <div style="font-size:7.5px;color:var(--muted);margin-top:3px;line-height:1.4">No events = healthy. Absence does not reduce confidence.</div>
+          </div>
+        </div>
+
+        <!-- Action -->
+        <div style="background:var(--hi);border:1px solid var(--border);border-radius:12px;padding:12px 16px;max-width:220px;display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Recommended Action</div>
+          <div style="padding:8px 10px;background:#FFFFFF;border-left:3px solid ${b.actionC};border-radius:5px;font-size:10.5px;color:var(--slate);line-height:1.6">${b.action}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+
+// ══════════════════════════════════════════
+// COMPOSITE DATE HELPERS
+// ══════════════════════════════════════════
+function getCompositeDates(){
+  const keys=['financial','behavioural','consent','news','legal','compliance','management'];
+  const defs=keys.map(k=>AGENT_DEFS[k]);
+  // max event date by ISO string
+  const eventISOs=defs.map(d=>d.eventDate?d.eventDate.iso:'2000-01-01');
+  const maxIdx=eventISOs.reduce((mi,v,i)=>v>eventISOs[mi]?i:mi,0);
+  const maxEv=defs[maxIdx].eventDate;
+  // max lastUpdated — parse as day MMM YYYY
+  const updDates=defs.map(d=>d.lastUpdated?d.lastUpdated.date:'—');
+  return {eventDate:maxEv, lastUpdated:updDates[0], allUpdates:updDates, eventAgent:AGENT_DEFS[keys[maxIdx]].name};
+}
+
+
+// ══════════════════════════════════════════
+// DECISION CONFIDENCE SCORE
+// ══════════════════════════════════════════
+function getDecisionConfidence(){
+  const mlKeys=['financial','behavioural','consent'];
+  const edKeys=['news','legal','compliance','management']; // event-driven: crawl freshness only
+
+  // ML agents: freshness × coverage × confidence
+  const mlScores=mlKeys.map(k=>{
+    const d=AGENT_DEFS[k];
+    return {
+      key:k,
+      freshness:d.freshness.score,
+      coverage:d.coverage.score,
+      confidence:d.confidence.score,
+      combined:Math.round(d.freshness.score*0.30 + d.coverage.score*0.30 + d.confidence.score*0.40)
+    };
+  });
+
+  // Event-driven agents: only freshness of last crawl matters
+  // No events = healthy signal — does NOT reduce confidence
+  const edScores=edKeys.map(k=>{
+    const d=AGENT_DEFS[k];
+    const crawlOk=(d.crawlStatus&&d.crawlStatus.ok!==false)||true;
+    return {
+      key:k,
+      freshness:d.freshness.score,
+      crawlOk,
+      combined:crawlOk ? d.freshness.score : 0 // crawl failure = zero contribution
+    };
+  });
+
+  const mlAvg=Math.round(mlScores.reduce((s,x)=>s+x.combined,0)/mlScores.length);
+  const edAvg=Math.round(edScores.reduce((s,x)=>s+x.combined,0)/edScores.length);
+  // ML agents carry more weight in decision confidence (70%) vs event-driven (30%)
+  const combined=Math.round(mlAvg*0.70 + edAvg*0.30);
+
+  const avgFresh=Math.round([...mlScores,...edScores].reduce((s,x)=>s+x.freshness,0)/6);
+  const avgCovg=Math.round(mlScores.reduce((s,x)=>s+x.coverage,0)/mlScores.length);
+  const avgConf=Math.round(mlScores.reduce((s,x)=>s+x.confidence,0)/mlScores.length);
+
+  const grade=combined>=80?'HIGH':combined>=65?'MODERATE':'LOW';
+  const color=combined>=80?C.green:combined>=65?C.amber:C.red;
+  return {combined, avgFresh, avgCovg, avgConf, mlAvg, edAvg, grade, color, mlScores, edScores};
+}
+
+// ══════════════════════════════════════════
+// SCORE HISTORY CHART
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// SCORE HISTORY CHART — 2Y Quarterly
+// ══════════════════════════════════════════
+// Dummy quarterly data: 8 quarters Q2-23 → Q1-25
+const SCORE_DATA={
+  'BL-7842':{
+    label:'Sunrise Textiles',
+    quarters:[
+      {q:'Q2 FY23',composite:82,financial:80,behavioural:78,consent:76,news:80,legal:88,compliance:82},
+      {q:'Q3 FY23',composite:79,financial:77,behavioural:74,consent:73,news:78,legal:87,compliance:78},
+      {q:'Q4 FY23',composite:74,financial:72,behavioural:68,consent:68,news:75,legal:86,compliance:74},
+      {q:'Q1 FY24',composite:68,financial:66,behavioural:62,consent:62,news:70,legal:84,compliance:68},
+      {q:'Q2 FY24',composite:58,financial:56,behavioural:52,consent:52,news:62,legal:82,compliance:60},
+      {q:'Q3 FY24',composite:50,financial:46,behavioural:42,consent:44,news:58,legal:80,compliance:52},
+      {q:'Q4 FY24',composite:42,financial:38,behavioural:33,consent:38,news:54,legal:78,compliance:46},
+      {q:'Q1 FY25',composite:33,financial:29,behavioural:26,consent:42,news:58,legal:80,compliance:42},
+    ]
+  },
+  'BL-4419':{
+    label:'Apex Pharma',
+    quarters:[
+      {q:'Q2 FY23',composite:68,financial:66,behavioural:64,consent:62,news:66,legal:72,compliance:70},
+      {q:'Q3 FY23',composite:62,financial:60,behavioural:58,consent:56,news:62,legal:66,compliance:64},
+      {q:'Q4 FY23',composite:55,financial:52,behavioural:50,consent:50,news:58,legal:60,compliance:58},
+      {q:'Q1 FY24',composite:48,financial:46,behavioural:44,consent:44,news:52,legal:54,compliance:50},
+      {q:'Q2 FY24',composite:38,financial:36,behavioural:34,consent:34,news:44,legal:44,compliance:42},
+      {q:'Q3 FY24',composite:28,financial:26,behavioural:24,consent:26,news:36,legal:34,compliance:34},
+      {q:'Q4 FY24',composite:21,financial:18,behavioural:18,consent:22,news:30,legal:26,compliance:30},
+      {q:'Q1 FY25',composite:17,financial:12,behavioural:15,consent:21,news:28,legal:22,compliance:28},
+    ]
+  },
+  'BL-2931':{
+    label:'GreenFields Agro',
+    quarters:[
+      {q:'Q2 FY23',composite:42,financial:40,behavioural:38,consent:44,news:52,legal:66,compliance:56},
+      {q:'Q3 FY23',composite:48,financial:46,behavioural:44,consent:50,news:58,legal:70,compliance:62},
+      {q:'Q4 FY23',composite:54,financial:52,behavioural:50,consent:56,news:64,legal:74,compliance:66},
+      {q:'Q1 FY24',composite:59,financial:58,behavioural:56,consent:62,news:70,legal:78,compliance:70},
+      {q:'Q2 FY24',composite:63,financial:62,behavioural:62,consent:66,news:74,legal:82,compliance:74},
+      {q:'Q3 FY24',composite:67,financial:66,behavioural:68,consent:70,news:78,legal:86,compliance:78},
+      {q:'Q4 FY24',composite:70,financial:72,behavioural:76,consent:72,news:82,legal:88,compliance:80},
+      {q:'Q1 FY25',composite:72,financial:78,behavioural:82,consent:76,news:85,legal:90,compliance:82},
+    ]
+  }
+};
+
+function renderScoreHistory(agentKey){
+  agentKey=agentKey||null;
+  const b=BORROWERS[currentBorrower];
+  const sd=SCORE_DATA[b.id];
+  const rows=sd.quarters;
+  const n=rows.length;
+  const agentMeta={
+    financial: {color:'#2563EB',label:'Financial Agent'},
+    behavioural:{color:'#6044CC',label:'Behavioural Agent'},
+    consent:    {color:'#0E8A78',label:'Consent Agent'},
+    news:       {color:'#E8920A',label:'News & Sentiment Agent'},
+    legal:      {color:'#D07A10',label:'Legal Agent'},
+    compliance: {color:'#1A9A5C',label:'Compliance Agent'},
+    management: {color:'#5A6E8A',label:'Management Risk Agent'},
+  };
+  const allAgents=[
+    {key:'financial',  color:'#2563EB',label:'Financial'},
+    {key:'behavioural',color:'#6044CC',label:'Behavioural'},
+    {key:'consent',    color:'#0E8A78',label:'Consent'},
+    {key:'news',       color:'#E8920A',label:'News'},
+    {key:'legal',      color:'#D07A10',label:'Legal'},
+    {key:'compliance', color:'#1A9A5C',label:'Compliance'},
+    {key:'management', color:'#5A6E8A',label:'Management'},
+  ];
+  const lineKey=agentKey||'composite';
+  const lineColor=agentKey?agentMeta[agentKey].color:'#0F2952';
+  const lineLabel=agentKey?agentMeta[agentKey].label:'Composite';
+  const showAll=!agentKey;
+
+  const W=880,H=260,PL=42,PR=20,PT=18,PB=52;
+  const CW=W-PL-PR,CH=H-PT-PB;
+  const xOf=i=>PL+(i/(n-1))*CW;
+  const yOf=v=>PT+CH-(v/100)*CH;
+
+  let svg='';
+
+  // Risk zone bands
+  const zones=[
+    {from:80,to:100,col:'#1A9A5C',lbl:'HEALTHY'},
+    {from:60,to:80, col:'#D07A10',lbl:'WATCH'},
+    {from:0, to:60, col:'#D63B3B',lbl:'HIGH RISK'},
+  ];
+  zones.forEach(z=>{
+    svg+=`<rect x="${xOf(0)}" y="${yOf(z.to)}" width="${CW}" height="${yOf(z.from)-yOf(z.to)}" fill="${z.col}" fill-opacity="0.05"/>`;
+    svg+=`<text x="${xOf(n-1)+8}" y="${(yOf(z.to)+yOf(z.from))/2+3.5}" fill="${z.col}" font-size="8" font-family="Inter,sans-serif" font-weight="700" opacity="0.85">${z.lbl}</text>`;
+  });
+
+  // Y grid + labels
+  [0,25,50,75,100].forEach(v=>{
+    const y=yOf(v);
+    svg+=`<line x1="${PL}" y1="${y}" x2="${PL+CW}" y2="${y}" stroke="#DDE3EE" stroke-width="1" stroke-dasharray="${v===0||v===100?'0':'4,3'}"/>`;
+    svg+=`<text x="${PL-6}" y="${y+3.5}" text-anchor="end" fill="#94A3BC" font-size="9" font-family="Inter,sans-serif">${v}</text>`;
+  });
+
+  // Vertical quarter lines + X labels
+  rows.forEach((r,i)=>{
+    const x=xOf(i);
+    svg+=`<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+CH}" stroke="#DDE3EE" stroke-width="1" stroke-dasharray="3,3"/>`;
+    svg+=`<text x="${x}" y="${PT+CH+16}" text-anchor="middle" fill="#5A6E8A" font-size="9.5" font-family="Inter,sans-serif" font-weight="600">${r.q}</text>`;
+  });
+
+
+
+  // Gradient fill under main line
+  const gid='g'+currentBorrower+(agentKey||'c');
+  const endScore=rows[n-1][lineKey];
+  svg+=`<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="${lineColor}" stop-opacity="0.18"/><stop offset="100%" stop-color="${lineColor}" stop-opacity="0.02"/></linearGradient></defs>`;
+  const pts=rows.map((_,i)=>`${xOf(i)},${yOf(rows[i][lineKey])}`).join(' ');
+  svg+=`<polygon points="${xOf(0)},${PT+CH} ${pts} ${xOf(n-1)},${PT+CH}" fill="url(#${gid})"/>`;
+
+  // Main line
+  svg+=`<polyline points="${pts}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // Dots + value labels on main line
+  rows.forEach((r,i)=>{
+    const v=r[lineKey];
+    svg+=`<circle cx="${xOf(i)}" cy="${yOf(v)}" r="5" fill="${lineColor}" stroke="#fff" stroke-width="2"/>`;
+    svg+=`<text x="${xOf(i)}" y="${yOf(v)-11}" text-anchor="middle" fill="${lineColor}" font-size="10" font-family="Inter,sans-serif" font-weight="800">${v}</text>`;
+  });
+
+  // Legend
+  const legItems=showAll
+    ?[{color:'#0F2952',label:'Composite Health Score',w:3}]
+    :[{color:lineColor,label:lineLabel,w:3}];
+  let legX=PL,leg='';
+  const legY=H-10;
+  legItems.forEach(({color,label,w})=>{
+    leg+=`<line x1="${legX}" y1="${legY}" x2="${legX+18}" y2="${legY}" stroke="${color}" stroke-width="${w}"/>`;
+    leg+=`<circle cx="${legX+9}" cy="${legY}" r="3" fill="${color}"/>`;
+    leg+=`<text x="${legX+22}" y="${legY+3.5}" fill="#5A6E8A" font-size="9.5" font-family="Inter,sans-serif">${label}</text>`;
+    legX+=label.length*6.2+36;
+  });
+
+  // Delta stats
+  const first=rows[0][lineKey],last=rows[n-1][lineKey];
+  const delta=last-first;
+  const dCol=delta<-15?'#D63B3B':delta<-5?'#D07A10':delta>15?'#1A9A5C':delta>5?'#0E8A78':'#5A6E8A';
+  const dLbl=(delta>0?'+':'')+delta;
+  const titleLine=agentKey?lineLabel+' · Score Trend':'Composite Score Trend';
+
+  return `<div style="background:#fff;border:1px solid ${agentKey?lineColor+'44':'#DDE3EE'};border-radius:12px;padding:16px 18px;transition:border-color .25s">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${agentKey?`<div style="width:10px;height:10px;border-radius:50%;background:${lineColor}"></div>`:''}
+          <div style="font-size:13px;font-weight:800;color:#0F2952">${titleLine} &nbsp;·&nbsp; Last 2 Years · Quarterly</div>
+        </div>
+        <div style="font-size:9px;color:#94A3BC;margin-top:3px">${agentKey?'Click another agent in the panel to switch · ':''}Higher = healthier · Each point = end-of-quarter score</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="background:#F0F4FC;border:1px solid #DDE3EE;border-radius:8px;padding:6px 14px;text-align:center">
+          <div style="font-size:8px;color:#94A3BC;font-weight:700;text-transform:uppercase;letter-spacing:.06em">2Y Change</div>
+          <div style="font-size:20px;font-weight:900;color:${dCol};font-family:var(--mono);line-height:1.1">${dLbl}</div>
+        </div>
+        <div style="background:${agentKey?lineColor+'11':'#F0F4FC'};border:1px solid ${agentKey?lineColor+'44':'#DDE3EE'};border-radius:8px;padding:6px 14px;text-align:center">
+          <div style="font-size:8px;color:#94A3BC;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Latest Score</div>
+          <div style="font-size:20px;font-weight:900;color:${agentKey?lineColor:rC(last)};font-family:var(--mono);line-height:1.1">${last}</div>
+        </div>
+      </div>
+    </div>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible;width:100%;max-width:${W}px">
+      ${svg}${leg}
+    </svg>
+  </div>`;
+}
+
+
+// ══════════════════════════════════════════
+// SCORE EXPLAINABILITY
+// ══════════════════════════════════════════
+function renderShap(){
+  const b=BORROWERS[currentBorrower];
+
+  // Agent roster with model type context
+  const agents=[
+    {key:'financial',  color:C.blue,   icon:'📊', name:'Financial Health',
+     modelType:'Supervised ML', modelNote:'XGBoost trained on audited financials — labels from CRISIL/CARE ratings'},
+    {key:'behavioural',color:C.purple, icon:'🔄', name:'Account Behaviour',
+     modelType:'Supervised ML', modelNote:'Logistic regression on CBS transaction history — labels from NPA events'},
+    {key:'consent',    color:C.teal,   icon:'🔐', name:'GST & Bank Data',
+     modelType:'ML + Rules',    modelNote:'ML scores combined with 8 triangulation rules that fire on consent data patterns'},
+    {key:'news',       color:C.gold,   icon:'📰', name:'News & Sentiment',
+     modelType:'ML + Rules',    modelNote:'NLP sentiment model weighted by category rules configured in admin portal'},
+    {key:'legal',      color:C.amber,  icon:'⚖️', name:'Legal Standing',
+     modelType:'Rule-Based',    modelNote:'Each legal event type has a configured severity weight — score is cumulative flag score'},
+    {key:'compliance', color:C.green,  icon:'📋', name:'Regulatory Filings',
+     modelType:'Rule-Based',    modelNote:'Recency-weighted filing compliance across GST, EPFO and statutory returns'},
+    {key:'management', color:C.slate,  icon:'👔', name:'Management Risk',
+     modelType:'Unsupervised',  modelNote:'Event-driven + qualitative on director stability, promoter pledges and leadership quality'},
+  ];
+
+  const edAgents=new Set(['news','legal','compliance','management']);
+
+  // ── Weight computation ──────────────────────────────────────────────
+  // ML agents (financial, behavioural, consent): effective weight = base × freshness × coverage × confidence
+  // Event-driven agents (news, legal, compliance): keep full base weight when crawl ok;
+  //   if crawl FAILED → weight is absent and redistributed proportionally to active agents.
+  //   "No events found" is a healthy signal — the agent's weight does NOT redistribute.
+  const baseW={financial:22,behavioural:22,consent:18,news:10,legal:10,compliance:10,management:8};
+  let raw={}, rawTotal=0;
+  agents.forEach(({key})=>{
+    const d=AGENT_DEFS[key];
+    if(edAgents.has(key)){
+      // Event-driven: full base weight if crawl ok, zero if crawl failed
+      const crawlOk=(d.crawlStatus&&d.crawlStatus.ok!==false)||true;
+      raw[key]=crawlOk ? baseW[key] : 0;
+    } else {
+      // ML agents: quality-weighted
+      raw[key]=baseW[key]*(d.freshness.score/100)*(d.coverage.score/100)*(d.confidence.score/100);
+    }
+    rawTotal+=raw[key];
+  });
+
+  // Normalise so all effective weights sum to 100
+  // This naturally redistributes any absent agent's weight to active agents proportionally
+  const wEff={};
+  agents.forEach(({key})=>{ wEff[key]=Math.round((raw[key]/rawTotal)*100); });
+  const absentAgents=agents.filter(({key})=>raw[key]===0).map(({key})=>key);
+
+  // Agent contribution to composite: agentScore × effectiveWeight / 100
+  const aScore=b.agentScores;
+  let agentContrib={}, contribTotal=0;
+  agents.forEach(({key})=>{ agentContrib[key]=Math.round(aScore[key]*wEff[key]/100); contribTotal+=agentContrib[key]; });
+
+  // Top features across all agents
+  const allFeats=[];
+  agents.forEach(({key,color,name:aname})=>{
+    const def=AGENT_DEFS[key];
+    if(def.categories) def.categories.forEach(cat=>(cat.features||[]).forEach(f=>allFeats.push({...f,agentKey:key,agentName:aname,color})));
+  });
+  const maxC=Math.max(...allFeats.map(f=>Math.abs(f.contrib||0)),1);
+  const riskFeats=allFeats.filter(f=>(f.contrib||0)>0).sort((a,b)=>b.contrib-a.contrib).slice(0,8);
+  const goodFeats=allFeats.filter(f=>(f.contrib||0)<0).sort((a,b)=>a.contrib-b.contrib).slice(0,5);
+  const maxAgent=Math.max(...agents.map(({key})=>agentContrib[key]),1);
+
+  document.getElementById('shap-wrap').innerHTML=`
+
+  <!-- Architecture strip -->
+  <div style="background:var(--hi);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:14px">
+    <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em">How the composite score is built</div>
+    <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap">
+      ${agents.map(({key,color,icon,name,modelType})=>`
+        <div style="display:flex;align-items:center;gap:0">
+          <div style="background:#fff;border:1px solid ${color}44;border-radius:8px;padding:7px 10px;text-align:center;min-width:90px">
+            <div style="font-size:13px">${icon}</div>
+            <div style="font-size:9px;font-weight:700;color:${color};margin-top:2px">${name}</div>
+            <div style="font-size:7.5px;color:var(--muted);margin-top:2px">${modelType}</div>
+            <div style="font-size:11px;font-weight:900;color:${rC(aScore[key])};font-family:var(--mono);margin-top:4px">${aScore[key]}</div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);padding:0 4px">→</div>
+        </div>`).join('')}
+      <div style="background:${C.navy};border-radius:8px;padding:10px 14px;text-align:center;color:#fff;min-width:90px">
+        <div style="font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:0.7;margin-bottom:2px">Composite</div>
+        <div style="font-size:8px;opacity:0.6;margin-bottom:4px">Semi-supervised model<br>trained on agent outputs</div>
+        <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:${rC(b.score)}">${b.score}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two columns: Agent contributions | Feature signals -->
+  <div style="display:grid;grid-template-columns:300px 1fr;gap:14px">
+
+    <!-- Agent contributions -->
+    <div class="card" style="padding:16px">
+      <div style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:3px">Agent contributions</div>
+      <div style="font-size:9px;color:var(--muted);margin-bottom:10px;line-height:1.5">Effective weights after data quality adjustment. <span style="color:${C.amber}">Event-driven agents</span> keep their base weight when their data source is live — no events = healthy signal, weight stays. Weight only redistributes if the crawl/source <em>fails</em>.</div>
+      ${agents.map(({key,color,icon,name})=>{
+        const sc=aScore[key], ct=agentContrib[key], scCol=rC(sc);
+        const barW=Math.round((ct/maxAgent)*100);
+        const isED=edAgents.has(key);
+        const isAbsent=raw[key]===0;
+        return `<div style="margin-bottom:11px;opacity:${isAbsent?0.45:1}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:12px">${icon}</span>
+            <span style="font-size:10px;font-weight:600;color:var(--slate);flex:1">${name}</span>
+            ${isED?`<span style="font-size:7px;font-weight:700;color:${C.amber};background:${C.amberD};border-radius:3px;padding:1px 5px">EVENT-DRIVEN</span>`:''}
+            ${isAbsent?`<span style="font-size:7px;font-weight:700;color:${C.red}">REDISTRIBUTED</span>`:''}
+            <span style="font-size:9px;color:var(--muted)">score</span>
+            <span style="font-size:11px;font-weight:800;color:${scCol};font-family:var(--mono);width:24px;text-align:right">${sc}</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${barW}%;background:${color};border-radius:4px"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:2px">
+            <span style="font-size:7.5px;color:var(--muted)">${wEff[key]}% effective weight${isED?` (base ${baseW[key]}%, full — crawl ok)`:''}</span>
+            <span style="font-size:8px;font-weight:700;color:${color};font-family:var(--mono)">+${ct} pts</span>
+          </div>
+        </div>`;
+      }).join('')}
+      <div style="border-top:2px solid var(--navy);padding-top:8px;display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+        <span style="font-size:10px;font-weight:700;color:var(--navy)">Composite score</span>
+        <span style="font-size:18px;font-weight:900;color:${rC(b.score)};font-family:var(--mono)">${b.score}</span>
+      </div>
+    </div>
+
+    <!-- Feature signals -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <div class="card" style="padding:16px">
+        <div style="font-size:12px;font-weight:800;color:${C.red};margin-bottom:3px">🔴 Pulling the score down</div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:12px">These signals are weak or stressed — they are reducing the health score. Longer bar = stronger impact.</div>
+        ${riskFeats.map(f=>{
+          const bw=Math.round((f.contrib/maxC)*100);
+          return `<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:6px;height:6px;border-radius:50%;background:${f.color};flex-shrink:0;margin-top:1px"></div>
+            <div style="width:170px;flex-shrink:0">
+              <div style="font-size:9.5px;font-weight:600;color:var(--slate)">${f.name}</div>
+              <div style="font-size:8px;color:var(--muted)">${f.agentName} · <strong style="color:var(--slate)">${f.val}</strong></div>
+            </div>
+            <div style="flex:1;height:8px;background:#FEF0F0;border-radius:4px;overflow:hidden">
+              <div style="height:100%;width:${bw}%;background:${C.red};border-radius:4px;opacity:0.72"></div>
+            </div>
+            <div style="font-size:9.5px;font-weight:800;color:${C.red};font-family:var(--mono);width:28px;text-align:right">−${f.contrib}</div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div class="card" style="padding:16px">
+        <div style="font-size:12px;font-weight:800;color:${C.green};margin-bottom:3px">🟢 Supporting the score</div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:12px">These signals are healthy — they are holding the score up. Longer bar = stronger support.</div>
+        ${goodFeats.length?goodFeats.map(f=>{
+          const bw=Math.round((Math.abs(f.contrib)/maxC)*100);
+          return `<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:6px;height:6px;border-radius:50%;background:${f.color};flex-shrink:0;margin-top:1px"></div>
+            <div style="width:170px;flex-shrink:0">
+              <div style="font-size:9.5px;font-weight:600;color:var(--slate)">${f.name}</div>
+              <div style="font-size:8px;color:var(--muted)">${f.agentName} · <strong style="color:var(--slate)">${f.val}</strong></div>
+            </div>
+            <div style="flex:1;height:8px;background:#EDF8F2;border-radius:4px;overflow:hidden">
+              <div style="height:100%;width:${bw}%;background:${C.green};border-radius:4px;opacity:0.72"></div>
+            </div>
+            <div style="font-size:9.5px;font-weight:800;color:${C.green};font-family:var(--mono);width:28px;text-align:right">+${Math.abs(f.contrib)}</div>
+          </div>`;
+        }).join(''):`<div style="font-size:10px;color:var(--muted);padding:8px 0">No strong positive signals for this borrower at this time.</div>`}
+      </div>
+
+    </div>
+  </div>`;
+}
+
+
+// ══════════════════════════════════════════
+// SIGNALS
+// ══════════════════════════════════════════
+function renderSignals(){
+  const b=BORROWERS[currentBorrower];
+  const def0=AGENT_DEFS.financial, def1=AGENT_DEFS.behavioural, def2=AGENT_DEFS.consent;
+  const makeCard=(title,icon,color,cats)=>`
+    <div class="card" style="border-color:${color}28;box-shadow:0 0 16px ${color}0C">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+        <div style="background:${color}18;border-radius:7px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px">${icon}</div>
+        <span style="font-size:11px;font-weight:800;color:${color};text-transform:uppercase;letter-spacing:.07em">${title}</span>
+      </div>
+      ${cats.flatMap(cat=>cat.features.slice(0,4)).map(f=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;background:var(--hi);border-radius:6px;margin-bottom:4px;border-left:2px solid ${sC(f.risk)}">
+          <span style="font-size:10.5px;color:var(--slate)">${f.name}</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:11px;font-weight:700;font-family:var(--mono)">${f.val}</span>
+            <span style="font-size:9px;color:${sC(f.risk)}">${sI(f.risk)}</span>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('signals-wrap').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+      ${makeCard('Private Bank Data','🏦',C.blue,def0.categories)}
+      ${makeCard('Consent (GST / Bank)','🔐',C.teal,def2.categories)}
+      ${makeCard('Behavioural & Conduct','🔄',C.purple,def1.categories.filter(cat=>cat.key!=='collateral'))}
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// SUB CONTENT
+// ══════════════════════════════════════════
+function renderSubContent(){
+  if(currentSub==='agents') renderAgentsView();
+  else if(currentSub==='shap') renderShap();
+}
+function renderBorrower(){
+  renderBorrowerHeader();
+  document.getElementById('score-history-wrap').innerHTML=renderScoreHistory();
+  renderSubContent();
+}
+
+// ══════════════════════════════════════════
+// PORTFOLIO DATA & RENDER
+// ══════════════════════════════════════════
+const PF_ACCOUNTS=[
+  // id, name, portfolio, industry, outstanding(Cr), score, grade, dpd, odPct, topDrivers
+  {id:'BL-4419',name:'Apex Pharma Components',portfolio:'wc_od',     industry:'pharma',        out:7.4,  score:17,grade:'high',   dpd:3,od:96,drivers:'OD 96% · DPD ×3 · Legal'},
+  {id:'BL-6102',name:'Metro Constructions',   portfolio:'corporate', industry:'construction',  out:14.2, score:21,grade:'high',   dpd:2,od:88,drivers:'Legal filing · Inflows −32%'},
+  {id:'BL-3380',name:'Shiva Logistics Corp',  portfolio:'msme_term', industry:'transport',     out:5.1,  score:24,grade:'high',   dpd:1,od:91,drivers:'EPFO −18 · OD 91%'},
+  {id:'BL-9201',name:'Regal Retail Pvt Ltd',  portfolio:'wc_od',     industry:'retail',        out:3.8,  score:26,grade:'high',   dpd:2,od:82,drivers:'Collections −28% · GST gap'},
+  {id:'BL-5512',name:'Indus Infra Projects',  portfolio:'corporate', industry:'infra',         out:22.6, score:28,grade:'high',   dpd:0,od:72,drivers:'Cash flow deteriorating · Legal'},
+  {id:'BL-8830',name:'Bharat Textile Mills',  portfolio:'msme_term', industry:'textile',       out:4.4,  score:29,grade:'high',   dpd:1,od:68,drivers:'Revenue −18% · DPD ×1'},
+  {id:'BL-7442',name:'Sunrise Auto Parts',    portfolio:'msme_term', industry:'manufacturing', out:2.1,  score:31,grade:'high',   dpd:0,od:74,drivers:'WC cycle +24 days · OD rising'},
+  {id:'BL-2208',name:'Delta Chemicals Ltd',   portfolio:'wc_od',     industry:'pharma',        out:6.8,  score:34,grade:'high',   dpd:1,od:77,drivers:'ITC stress · Supplier disputes'},
+  {id:'BL-7842',name:'Sunrise Textiles',      portfolio:'msme_term', industry:'textile',       out:2.8,  score:33,grade:'high',   dpd:2,od:64,drivers:'Inflows −14% · DPD ×2'},
+  {id:'BL-1190',name:'PrimeEdge Pharma',      portfolio:'wc_od',     industry:'pharma',        out:4.2,  score:38,grade:'high',   dpd:0,od:58,drivers:'EBITDA margin ↓ · Bureau stress'},
+  {id:'BL-4401',name:'KanjiRam Agro Exports', portfolio:'kisan',     industry:'agri',          out:1.8,  score:44,grade:'watch',  dpd:0,od:42,drivers:'Seasonal cash flow dip'},
+  {id:'BL-5520',name:'Urban Build Systems',   portfolio:'corporate', industry:'construction',  out:9.1,  score:47,grade:'watch',  dpd:0,od:35,drivers:'Sector headwinds · EPFO drop'},
+  {id:'BL-3310',name:'Karan Transport Ltd',   portfolio:'msme_term', industry:'transport',     out:3.6,  score:50,grade:'watch',  dpd:0,od:48,drivers:'Fuel cost spike · OD moderate'},
+  {id:'BL-6680',name:'NavBharat Steel',       portfolio:'corporate', industry:'manufacturing', out:18.4, score:52,grade:'watch',  dpd:0,od:31,drivers:'Debt up · Margin flat'},
+  {id:'BL-2240',name:'Agri Green Processors', portfolio:'kisan',     industry:'agri',          out:0.9,  score:55,grade:'watch',  dpd:0,od:22,drivers:'GSTR late ×2 · mild ITC gap'},
+  {id:'BL-7110',name:'FastTrack Couriers',    portfolio:'msme_term', industry:'transport',     out:2.2,  score:58,grade:'watch',  dpd:0,od:26,drivers:'Revenue flat · moderate OD'},
+  {id:'BL-9900',name:'Medline Pharmaceuticals',portfolio:'corporate',industry:'pharma',        out:12.8, score:61,grade:'watch',  dpd:0,od:18,drivers:'News negative · minor legal'},
+  {id:'BL-3314',name:'SpiceRoute Foods',      portfolio:'msme_term', industry:'agri',          out:1.4,  score:63,grade:'watch',  dpd:0,od:14,drivers:'GST filings irregular'},
+  {id:'BL-4412',name:'Voltas Fabrications',   portfolio:'msme_term', industry:'manufacturing', out:3.1,  score:68,grade:'healthy',dpd:0,od:12,drivers:'Improving margins'},
+  {id:'BL-8810',name:'Krishi Biotech Ltd',    portfolio:'kisan',     industry:'agri',          out:2.2,  score:70,grade:'healthy',dpd:0,od:8, drivers:'Revenue +18% · clean filing'},
+  {id:'BL-5544',name:'SunTech Components',    portfolio:'wc_od',     industry:'manufacturing', out:4.6,  score:72,grade:'healthy',dpd:0,od:10,drivers:'Strong collections'},
+  {id:'BL-2931',name:'GreenFields Agro',      portfolio:'kisan',     industry:'agri',          out:1.2,  score:72,grade:'healthy',dpd:0,od:6, drivers:'Revenue +22% · all filings clean'},
+  {id:'BL-7760',name:'Anand Engineering',     portfolio:'msme_term', industry:'manufacturing', out:2.8,  score:76,grade:'healthy',dpd:0,od:8, drivers:'Low leverage · good CF'},
+  {id:'BL-6200',name:'BioGenix Research',     portfolio:'corporate', industry:'pharma',        out:8.4,  score:80,grade:'healthy',dpd:0,od:4, drivers:'Strong earnings · no legal'},
+  {id:'BL-4480',name:'HarvestPlus Organics',  portfolio:'kisan',     industry:'agri',          out:0.8,  score:82,grade:'healthy',dpd:0,od:5, drivers:'Export growth · clean compliance'},
+];
+
+// Sector-level predicted risk data (for AI section)
+const SECTOR_FORECAST=[
+  {sector:'Textile',        industry:'textile',      accounts:312, exposure:48.2, currentAvgScore:38, predictedScore:32, migrationRisk:22, psiAlert:true,  trend:'deteriorating'},
+  {sector:'Construction',   industry:'construction', accounts:184, exposure:86.4, currentAvgScore:42, predictedScore:38, migrationRisk:18, psiAlert:true,  trend:'deteriorating'},
+  {sector:'Pharma & Chem',  industry:'pharma',       accounts:228, exposure:62.8, currentAvgScore:47, predictedScore:44, migrationRisk:12, psiAlert:false, trend:'watch'},
+  {sector:'Transport',      industry:'transport',    accounts:196, exposure:38.6, currentAvgScore:51, predictedScore:49, migrationRisk:9,  psiAlert:false, trend:'stable'},
+  {sector:'Manufacturing',  industry:'manufacturing',accounts:448, exposure:124.2,currentAvgScore:54, predictedScore:52, migrationRisk:8,  psiAlert:false, trend:'stable'},
+  {sector:'Retail & Trade', industry:'retail',       accounts:264, exposure:41.8, currentAvgScore:57, predictedScore:56, migrationRisk:6,  psiAlert:false, trend:'stable'},
+  {sector:'Infrastructure', industry:'infra',        accounts:142, exposure:198.4,currentAvgScore:58, predictedScore:55, migrationRisk:11, psiAlert:true,  trend:'watch'},
+  {sector:'Agri & Food',    industry:'agri',         accounts:386, exposure:28.4, currentAvgScore:68, predictedScore:70, migrationRisk:4,  psiAlert:false, trend:'improving'},
+];
+
+// Portfolio-level 6-month predicted migration matrix (% of accounts)
+// Rows = current grade, Cols = predicted grade in 6M
+const MIGRATION_MATRIX={
+  labels:['Healthy','Watch','High Risk'],
+  data:[
+    [82, 14, 4 ],  // Currently Healthy → predicted to be: 82% Healthy, 14% Watch, 4% High Risk
+    [18, 62, 20],  // Currently Watch
+    [8,  24, 68],  // Currently High Risk
+  ]
+};
+
+// Portfolio 12-month predicted default rate trend
+const PD_FORECAST=[
+  {q:'Q2 FY23',actual:14.2,predicted:null},{q:'Q3 FY23',actual:15.8,predicted:null},
+  {q:'Q4 FY23',actual:16.4,predicted:null},{q:'Q1 FY24',actual:17.1,predicted:null},
+  {q:'Q2 FY24',actual:17.8,predicted:null},{q:'Q3 FY24',actual:18.4,predicted:null},
+  {q:'Q4 FY24',actual:19.1,predicted:null},{q:'Q1 FY25',actual:19.4,predicted:19.4},
+  {q:'Q2 FY25',actual:null, predicted:20.8},{q:'Q3 FY25',actual:null,predicted:22.1},
+  {q:'Q4 FY25',actual:null, predicted:21.4},
+];
+
+function getPortfolioFilters(){
+  return {
+    portfolio: document.getElementById('pf-filter-portfolio')?.value||'all',
+    industry:  document.getElementById('pf-filter-industry')?.value||'all',
+    grade:     document.getElementById('pf-filter-grade')?.value||'all',
+  };
+}
+
+function resetPortfolioFilters(){
+  document.getElementById('pf-filter-portfolio').value='all';
+  document.getElementById('pf-filter-industry').value='all';
+  document.getElementById('pf-filter-grade').value='all';
+  renderPortfolio();
+}
+
+function applyFilters(accounts){
+  const f=getPortfolioFilters();
+  return accounts.filter(a=>{
+    if(f.portfolio!=='all'&&a.portfolio!==f.portfolio) return false;
+    if(f.industry!=='all'&&a.industry!==f.industry) return false;
+    if(f.grade!=='all'&&a.grade!==f.grade) return false;
+    return true;
+  });
+}
+
+function renderPortfolio(){
+  const filtered=applyFilters(PF_ACCOUNTS);
+  const f=getPortfolioFilters();
+  const isFiltered=f.portfolio!=='all'||f.industry!=='all'||f.grade!=='all';
+
+  // KPIs from filtered set
+  const totalOut=filtered.reduce((s,a)=>s+a.out,0);
+  const highRisk=filtered.filter(a=>a.grade==='high');
+  const watchList=filtered.filter(a=>a.grade==='watch');
+  const atRisk=highRisk.reduce((s,a)=>s+a.out,0)+watchList.reduce((s,a)=>s+a.out,0)*0.4;
+  const avgScore=filtered.length?Math.round(filtered.reduce((s,a)=>s+a.score,0)/filtered.length):0;
+
+  // Filter sector forecast if industry selected
+  const sectors=f.industry==='all'?SECTOR_FORECAST:SECTOR_FORECAST.filter(s=>s.industry===f.industry);
+
+  // SVG helpers
+  const pfNavy='#0F2952';
+
+  // ── Predicted PD line chart ─────────────────────────────────────────────
+  // Use a wide viewBox so SVG scales to any container width
+  const VW=560,VH=180,PL=38,PR=16,PT=14,PB=44;
+  const CW=VW-PL-PR,CH=VH-PT-PB;
+  const n=PD_FORECAST.length;
+  const xOf=i=>PL+(i/(n-1))*CW;
+  const yOf=v=>PT+CH-((v-10)/22)*CH;
+  let pdSvg='';
+  // Y grid
+  [10,15,20,25,30].forEach(v=>{
+    const y=yOf(v);
+    pdSvg+=`<line x1="${PL}" y1="${y}" x2="${PL+CW}" y2="${y}" stroke="#DDE3EE" stroke-width="1" stroke-dasharray="3,3"/>`;
+    pdSvg+=`<text x="${PL-5}" y="${y+3.5}" text-anchor="end" fill="#94A3BC" font-size="9" font-family="Inter">${v}%</text>`;
+  });
+  // Forecast band
+  const predPts=PD_FORECAST.filter(d=>d.predicted!==null);
+  if(predPts.length>1){
+    const upperPts=predPts.map(d=>`${xOf(PD_FORECAST.indexOf(d))},${yOf(d.predicted+1.8)}`).join(' ');
+    const lowerPts=[...predPts].reverse().map(d=>`${xOf(PD_FORECAST.indexOf(d))},${yOf(d.predicted-1.8)}`).join(' ');
+    pdSvg+=`<polygon points="${upperPts} ${lowerPts}" fill="#6044CC" fill-opacity="0.10"/>`;
+  }
+  // Actual line + fill
+  const actuals=PD_FORECAST.filter(d=>d.actual!==null);
+  const actPts=actuals.map(d=>`${xOf(PD_FORECAST.indexOf(d))},${yOf(d.actual)}`).join(' ');
+  const actFill=`${PL},${PT+CH} `+actPts+` ${xOf(actuals.length-1)},${PT+CH}`;
+  pdSvg+=`<polygon points="${actFill}" fill="${pfNavy}" fill-opacity="0.07"/>`;
+  pdSvg+=`<polyline points="${actPts}" fill="none" stroke="${pfNavy}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  actuals.forEach(d=>{ const x=xOf(PD_FORECAST.indexOf(d)),y=yOf(d.actual); pdSvg+=`<circle cx="${x}" cy="${y}" r="3.5" fill="${pfNavy}" stroke="#fff" stroke-width="1.5"/>`; });
+  // Predicted line (dashed)
+  const predFull=[...actuals.slice(-1),...PD_FORECAST.filter(d=>d.predicted!==null&&d.actual===null)];
+  const predLinePts=predFull.map(d=>`${xOf(PD_FORECAST.indexOf(d))},${yOf(d.predicted)}`).join(' ');
+  pdSvg+=`<polyline points="${predLinePts}" fill="none" stroke="#6044CC" stroke-width="2.5" stroke-dasharray="6,3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  predFull.slice(1).forEach(d=>{ const x=xOf(PD_FORECAST.indexOf(d)),y=yOf(d.predicted); pdSvg+=`<circle cx="${x}" cy="${y}" r="4" fill="#6044CC" stroke="#fff" stroke-width="1.5"/><text x="${x}" y="${y-8}" text-anchor="middle" fill="#6044CC" font-size="8.5" font-family="Inter" font-weight="700">${d.predicted}%</text>`; });
+  // X labels — all quarters
+  PD_FORECAST.forEach((d,i)=>{ if(i%2===0||i===n-1) pdSvg+=`<text x="${xOf(i)}" y="${PT+CH+16}" text-anchor="middle" fill="#94A3BC" font-size="8.5" font-family="Inter">${d.q}</text>`; });
+  // Divider
+  const splitI=PD_FORECAST.findIndex(d=>d.predicted&&d.actual);
+  if(splitI>=0){
+    pdSvg+=`<line x1="${xOf(splitI)}" y1="${PT}" x2="${xOf(splitI)}" y2="${PT+CH}" stroke="#6044CC" stroke-width="1.5" stroke-dasharray="4,3" stroke-opacity="0.6"/>`;
+    pdSvg+=`<text x="${xOf(splitI)-6}" y="${PT+10}" text-anchor="end" fill="#94A3BC" font-size="8" font-family="Inter">Actual</text>`;
+    pdSvg+=`<text x="${xOf(splitI)+6}" y="${PT+10}" text-anchor="start" fill="#6044CC" font-size="8" font-family="Inter" font-weight="700">Predicted →</text>`;
+  }
+
+  // ── Migration matrix ──────────────────────────────────────────────────────
+  const mGrades=['Healthy','Watch','High Risk'];
+  const mColors=[C.green, C.amber, C.red];
+  const mBg=(ri,ci,v)=>{
+    if(ri===ci) return mColors[ri]+'18';
+    if(v>=20)   return C.red+'14';
+    return 'transparent';
+  };
+  const matrixHtml=`
+    <div style="font-size:9px;color:var(--muted);margin-bottom:8px">Current grade (rows) → Predicted grade in Q2 FY26 (columns)</div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="padding:5px 7px;font-size:8.5px;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)">Now ↓</th>
+        ${mGrades.map((g,i)=>`<th style="padding:5px 7px;text-align:center;border-bottom:1px solid var(--border);color:${mColors[i]};font-size:9.5px;font-weight:800">${g}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${MIGRATION_MATRIX.data.map((row,ri)=>`<tr>
+          <td style="padding:7px;font-weight:800;color:${mColors[ri]};font-size:9.5px;white-space:nowrap">${mGrades[ri]}</td>
+          ${row.map((v,ci)=>`<td style="padding:7px;text-align:center;background:${mBg(ri,ci,v)};border-radius:4px">
+            <div style="font-size:15px;font-weight:900;color:${ri===ci?mColors[ri]:v>=20?C.red:C.muted};font-family:var(--mono);line-height:1">${v}%</div>
+            <div style="font-size:7.5px;color:var(--muted);margin-top:1px">${ri===ci?'stay':'→ migrate'}</div>
+          </td>`).join('')}
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+
+  // ── Score distribution — horizontal bars ─────────────────────────────────
+  const bucketLabels=['80–100','60–80','40–60','20–40','0–20'];
+  const bucketColors=[C.green,C.green,C.amber,C.red,C.red];
+  const hBuckets=[0,0,0,0,0];
+  filtered.forEach(a=>{ const b=Math.min(4,Math.floor(a.score/20)); hBuckets[4-b]++; }); // reversed so healthy at top
+  const maxB=Math.max(...hBuckets,1);
+  const distHtml=bucketLabels.map((lbl,i)=>{
+    const v=hBuckets[i], pct=Math.round(v/filtered.length*100)||0;
+    const bw=Math.round(v/maxB*100);
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+      <div style="width:42px;font-size:9px;font-weight:700;color:${bucketColors[i]};text-align:right;flex-shrink:0">${lbl}</div>
+      <div style="flex:1;height:16px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${bw}%;background:${bucketColors[i]};border-radius:4px;opacity:0.75;transition:width .3s"></div>
+      </div>
+      <div style="width:52px;font-size:9px;color:var(--muted);flex-shrink:0">${v} accts</div>
+      <div style="width:28px;font-size:9px;font-weight:700;color:${bucketColors[i]};text-align:right;font-family:var(--mono);flex-shrink:0">${pct}%</div>
+    </div>`;
+  }).join('');
+
+  // ── Concentration flags ───────────────────────────────────────────────────
+  const highRiskExpPct=Math.round(highRisk.reduce((s,a)=>s+a.out,0)/Math.max(totalOut,0.1)*100);
+  const riskFlags=[
+    {label:'High-risk exposure',  val:highRiskExpPct+'%', over:highRiskExpPct>15, note:'Threshold 15%'},
+    {label:'Top-3 sector share',  val:'52%',              over:true,              note:'Threshold 50%'},
+    {label:'Accounts PSI > 0.20', val:'47',               over:true,              note:'Threshold 30'},
+  ];
+
+  document.getElementById('portfolio-body').innerHTML=`
+
+  <!-- KPI strip -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px">
+    <div class="kpi-tile"><div class="lbl">Accounts</div><div style="font-size:22px;font-weight:900;font-family:var(--mono)">${filtered.length.toLocaleString()}</div><div style="font-size:8.5px;color:var(--muted);margin-top:3px">${isFiltered?'filtered view':'total portfolio'}</div></div>
+    <div class="kpi-tile"><div class="lbl">Total Exposure</div><div style="font-size:22px;font-weight:900;color:var(--gold);font-family:var(--mono)">₹${totalOut.toFixed(1)} Cr</div></div>
+    <div class="kpi-tile" style="border-color:${C.red}22"><div class="lbl">At-Risk Exposure</div><div style="font-size:22px;font-weight:900;color:var(--red);font-family:var(--mono)">₹${atRisk.toFixed(1)} Cr</div><div style="font-size:8.5px;color:var(--muted);margin-top:3px">${Math.round(atRisk/totalOut*100)}% of book</div></div>
+    <div class="kpi-tile" style="border-color:${C.amber}22"><div class="lbl">Watch + High Risk</div><div style="font-size:22px;font-weight:900;color:var(--amber);font-family:var(--mono)">${watchList.length+highRisk.length}</div><div style="font-size:8.5px;color:var(--muted);margin-top:3px">${highRisk.length} high · ${watchList.length} watch</div></div>
+    <div class="kpi-tile"><div class="lbl">Avg Health Score</div><div style="font-size:22px;font-weight:900;color:${rC(avgScore)};font-family:var(--mono)">${avgScore}</div><div style="font-size:8.5px;color:var(--muted);margin-top:3px">portfolio composite</div></div>
+  </div>
+
+  <!-- AI Prediction section -->
+  <div style="background:linear-gradient(135deg,#0F2952 0%,#1b3f70 100%);border-radius:12px;padding:16px 18px;margin-bottom:14px">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="background:rgba(255,255,255,0.15);border-radius:7px;padding:5px 11px;font-size:10px;font-weight:800;color:#fff;letter-spacing:.06em">🤖 AI PORTFOLIO RISK FORECAST</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.55)">EWS ensemble · 6-month forward projection · updated daily</div>
+    </div>
+
+    <!-- Row 1: PD chart (wide) + migration matrix -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:12px">
+
+      <!-- PD trend chart -->
+      <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px">
+        <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px">Predicted Default Rate · 6-Month Forward</div>
+        <div style="font-size:8.5px;color:rgba(255,255,255,0.5);margin-bottom:12px">Aggregate of borrower-level PD outputs · shaded band = confidence interval</div>
+        <div style="background:#fff;border-radius:8px;padding:12px 14px 8px">
+          <svg width="100%" viewBox="0 0 ${VW} ${VH}" style="display:block;overflow:visible">${pdSvg}</svg>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:5px">
+            <div style="width:16px;height:2.5px;background:${pfNavy};border-radius:2px"></div>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.6)">Actual portfolio PD</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <svg width="16" height="10"><line x1="0" y1="5" x2="16" y2="5" stroke="#6044CC" stroke-width="2.5" stroke-dasharray="5,3"/></svg>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.6)">Model prediction</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <div style="width:16px;height:10px;background:#6044CC;opacity:0.18;border-radius:2px"></div>
+            <span style="font-size:8.5px;color:rgba(255,255,255,0.6)">Confidence band</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Migration matrix -->
+      <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px">
+        <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px">Grade Migration · Next Quarter</div>
+        <div style="font-size:8.5px;color:rgba(255,255,255,0.5);margin-bottom:12px">Where will each grade be in Q2 FY26?</div>
+        <div style="background:#fff;border-radius:8px;padding:10px 12px">${matrixHtml}</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Score distribution + Concentration flags side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+
+      <!-- Score distribution — horizontal bars -->
+      <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px">
+        <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px">Score Distribution</div>
+        <div style="font-size:8.5px;color:rgba(255,255,255,0.5);margin-bottom:14px">Accounts by health score band · filtered view</div>
+        <div style="background:#fff;border-radius:8px;padding:12px 14px">${distHtml}</div>
+      </div>
+
+      <!-- Concentration risk flags -->
+      <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px">
+        <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px">Concentration Risk</div>
+        <div style="font-size:8.5px;color:rgba(255,255,255,0.5);margin-bottom:14px">Flags where portfolio concentration exceeds safe thresholds</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${riskFlags.map(({label,val,over,note})=>`
+          <div style="background:${over?'rgba(214,59,59,0.18)':'rgba(255,255,255,0.06)'};border-radius:8px;padding:12px 14px;border:1px solid ${over?'rgba(214,59,59,0.4)':'rgba(255,255,255,0.1)'}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <div style="font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.9)">${label}</div>
+                <div style="font-size:8px;color:rgba(255,255,255,0.4);margin-top:2px">${note}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:20px;font-weight:900;font-family:var(--mono);color:${over?'#FF8080':'#80EEB0'};line-height:1">${val}</div>
+                <div style="font-size:8px;color:${over?'rgba(255,100,100,0.8)':'rgba(128,238,176,0.8)'};margin-top:2px">${over?'⚠ Above threshold':'✓ Within limit'}</div>
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Sector forecast table -->
+  <!-- Sector forecast table -->
+  <div class="card0" style="margin-bottom:14px">
+    <div style="padding:11px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:12px;font-weight:800;color:var(--navy)">Sector Risk Forecast · Next 2 Quarters</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px">Model predicts aggregate score movement per sector based on PSI, feature drift, and borrower-level signals</div>
+      </div>
+      <span class="pill ${sectors.some(s=>s.trend==='deteriorating')?'pr':'pa'}">${sectors.filter(s=>s.trend==='deteriorating').length} sectors deteriorating</span>
+    </div>
+    <table>
+      <thead><tr><th>Sector</th><th>Accounts</th><th>Exposure</th><th>Current Avg Score</th><th>Predicted Score (2Q)</th><th>Score Δ</th><th>Migration Risk</th><th>Data Signal</th><th>Outlook</th></tr></thead>
+      <tbody>
+        ${sectors.map(s=>{
+          const delta=s.predictedScore-s.currentAvgScore;
+          const dCol=delta<-5?C.red:delta<0?C.amber:C.green;
+          const trendPill=s.trend==='deteriorating'?'pr':s.trend==='watch'?'pa':s.trend==='improving'?'pg':'pb';
+          const trendLabel=s.trend==='deteriorating'?'⬇ Deteriorating':s.trend==='watch'?'→ Watch':s.trend==='improving'?'⬆ Improving':'— Stable';
+          return `<tr>
+            <td style="font-weight:700">${s.sector}</td>
+            <td style="font-family:var(--mono);color:var(--slate)">${s.accounts}</td>
+            <td style="font-family:var(--mono);color:var(--slate)">₹${s.exposure} Cr</td>
+            <td style="text-align:center"><span style="font-size:14px;font-weight:900;color:${rC(s.currentAvgScore)};font-family:var(--mono)">${s.currentAvgScore}</span></td>
+            <td style="text-align:center"><span style="font-size:14px;font-weight:900;color:${rC(s.predictedScore)};font-family:var(--mono)">${s.predictedScore}</span></td>
+            <td style="text-align:center;font-family:var(--mono);font-weight:800;color:${dCol}">${delta>0?'+':''}${delta}</td>
+            <td style="text-align:center">
+              <div style="height:5px;background:var(--border);border-radius:3px;width:60px;display:inline-block"><div style="height:100%;width:${s.migrationRisk*3}%;background:${s.migrationRisk>15?C.red:C.amber};border-radius:3px"></div></div>
+              <span style="font-size:9px;margin-left:4px;color:var(--muted)">${s.migrationRisk}%</span>
+            </td>
+            <td>${s.psiAlert?`<span class="pill pr" style="font-size:7.5px">PSI Alert</span>`:`<span class="pill pg" style="font-size:7.5px">Stable</span>`}</td>
+            <td><span class="pill ${trendPill}" style="font-size:8.5px">${trendLabel}</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Watchlist table -->
+  <div class="card0">
+    <div style="padding:11px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:12px;font-weight:800;color:var(--navy)">Account Watchlist</div>
+      <span class="pill pr">${filtered.filter(a=>a.grade!=='healthy').length} accounts requiring attention</span>
+    </div>
+    <table>
+      <thead><tr><th>Borrower</th><th>Portfolio</th><th>Industry</th><th>Exposure</th><th>Health Score</th><th>Grade</th><th>Key Signals</th><th>Action</th></tr></thead>
+      <tbody>
+        ${filtered.sort((a,b)=>a.score-b.score).slice(0,12).map(a=>`<tr>
+          <td style="font-weight:600">${a.name}</td>
+          <td style="font-size:9.5px;color:var(--slate)">${{msme_term:'MSME Term',wc_od:'WC OD',kisan:'Kisan',corporate:'Corporate'}[a.portfolio]||a.portfolio}</td>
+          <td style="color:var(--slate)">${a.industry.charAt(0).toUpperCase()+a.industry.slice(1)}</td>
+          <td style="font-family:var(--mono);color:var(--slate)">₹${a.out} Cr</td>
+          <td style="text-align:center"><span style="font-size:15px;font-weight:900;color:${rC(a.score)};font-family:var(--mono)">${a.score}</span></td>
+          <td><span class="pill ${rPill(a.score)}">${rL(a.score)}</span></td>
+          <td style="font-size:9.5px;color:var(--slate)">${a.drivers}</td>
+          <td><span class="pill pgo" style="cursor:pointer;font-size:8.5px">${a.grade==='high'?'Escalate →':'Review →'}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+
+  // Update count label
+  const countEl=document.getElementById('pf-count');
+  if(countEl) countEl.textContent=`Showing ${filtered.length} of ${PF_ACCOUNTS.length} accounts`;
+}
+
+// ══════════════════════════════════════════
+// DRIFT
+// ══════════════════════════════════════════
+function initDrift(){
+  const cohorts=[
+    {scored:'Sep-24',confirmed:'Mar-25',n:4380,tp:310,fp:235,fn:165},
+    {scored:'Aug-24',confirmed:'Feb-25',n:4420,tp:328,fp:201,fn:140},
+    {scored:'Jul-24',confirmed:'Jan-25',n:4390,tp:355,fp:162,fn:112},
+    {scored:'Jun-24',confirmed:'Dec-24',n:4350,tp:380,fp:130,fn:89},
+    {scored:'May-24',confirmed:'Nov-24',n:4310,tp:398,fp:102,fn:71},
+    {scored:'Apr-24',confirmed:'Oct-24',n:4260,tp:412,fp:88, fn:60},
+  ];
+  const psiFeatures=[
+    {feat:'Δ OD Utilisation (3M)',   agent:'Behavioural', psi:0.24, s:'warn'},
+    {feat:'ITC Claimed / Available', agent:'Consent',     psi:0.21, s:'warn'},
+    {feat:'Working Capital Cycle',   agent:'Financial',   psi:0.18, s:'watch'},
+    {feat:'GSTR-1 Sales Δ',         agent:'Consent',     psi:0.16, s:'watch'},
+    {feat:'Interest Coverage Ratio', agent:'Financial',   psi:0.13, s:'watch'},
+    {feat:'Weighted Delinquency',    agent:'Behavioural', psi:0.09, s:'ok'},
+    {feat:'Revenue Growth YoY',      agent:'Financial',   psi:0.06, s:'ok'},
+  ];
+  const events=[
+    {d:"Mar 07 '25",type:'warn',e:'PSI breach on OD Utilisation + ITC · Investigate triggered'},
+    {d:"Jan 15 '25",type:'ok',  e:'Model v2.4 deployed · AUC 0.91 on holdout · RBI validation passed'},
+    {d:"Dec 02 '24",type:'warn',e:'Construction sector PSI 0.28 · score dampening applied'},
+    {d:"Oct 18 '24",type:'ok',  e:'Model v2.3 retrained · AUC restored · A/B champion-challenger passed'},
+    {d:"Jun 01 '24",type:'info',e:'Model v2.3 training initiated · GST schema v3 features added'},
+  ];
+  const tpill={warn:'pa',ok:'pg',info:'pb'};
+  const tlabel={warn:'WARN',ok:'DEPLOYED',info:'INFO'};
+  const cohortRows=cohorts.map(r=>{
+    const rw=(r.tp - r.fp - 1.5*r.fn)/r.n;
+    const sc=rw>0.05?C.green:rw>0.03?C.amber:C.red;
+    const st=rw>0.05?'✓ Stable':rw>0.03?'⚠ Watch':'⛔ Below threshold';
+    return {r,rw,sc,st};
+  });
+
+  document.getElementById('drift-body').innerHTML=`
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px">
+    <div class="kpi-tile">
+      <div class="lbl">Model Version</div>
+      <div style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--navy)">v2.4</div>
+      <div style="font-size:8.5px;color:var(--muted);margin-top:4px">Deployed Jan 15 2025</div>
+    </div>
+    <div class="kpi-tile" style="border-color:${C.amber}22">
+      <div class="lbl">AUC-ROC</div>
+      <div style="font-size:26px;font-weight:900;font-family:var(--mono);color:${C.amber}">0.84</div>
+      <div style="font-size:8.5px;color:var(--muted);margin-top:4px">Baseline 0.91 · target >0.80 ✓</div>
+      <div style="height:3px;background:var(--border);border-radius:2px;margin-top:7px"><div style="height:100%;width:84%;background:${C.amber};border-radius:2px"></div></div>
+    </div>
+    <div class="kpi-tile" style="border-color:${C.red}22">
+      <div class="lbl">Recall</div>
+      <div style="font-size:26px;font-weight:900;font-family:var(--mono);color:${C.red}">76%</div>
+      <div style="font-size:8.5px;color:${C.red};margin-top:4px">Target >80% ✗ · −8pp from deploy</div>
+      <div style="height:3px;background:var(--border);border-radius:2px;margin-top:7px"><div style="height:100%;width:76%;background:${C.red};border-radius:2px"></div></div>
+    </div>
+    <div class="kpi-tile" style="border-color:${C.amber}22">
+      <div class="lbl">Portfolio PSI</div>
+      <div style="font-size:26px;font-weight:900;font-family:var(--mono);color:${C.amber}">0.18</div>
+      <div style="font-size:8.5px;color:${C.amber};margin-top:4px">2 features breached 0.20</div>
+      <div style="height:3px;background:var(--border);border-radius:2px;margin-top:7px"><div style="height:100%;width:72%;background:${C.amber};border-radius:2px"></div></div>
+    </div>
+    <div class="kpi-tile" style="border-color:${C.red}22">
+      <div class="lbl">Retrain Status</div>
+      <div style="font-size:13px;font-weight:900;color:${C.red};margin-top:4px;line-height:1.3">⛔ Recommended</div>
+      <div style="font-size:8px;color:var(--muted);margin-top:4px">Recall + PSI both breached</div>
+      <button id="retrain-btn" onclick="triggerRetrain()" style="margin-top:8px;width:100%;background:${C.red};color:#fff;border:none;border-radius:5px;padding:5px 0;font-size:9px;font-weight:700;cursor:pointer;font-family:var(--sans)">⟳ Queue Retraining</button>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="card0">
+      <div style="padding:11px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:12px;font-weight:800;color:var(--navy)">PSI by Feature · Top Drifting</div>
+          <div style="font-size:8.5px;color:var(--muted);margin-top:1px">Live · compares current distributions against training baseline</div>
+        </div>
+        <span class="pill pa">2 breached</span>
+      </div>
+      <div style="padding:12px 16px">
+        ${psiFeatures.map(({feat,agent,psi,s})=>{
+          const col=s==='warn'?C.red:s==='watch'?C.amber:C.green;
+          const bg=s==='warn'?C.redD:s==='watch'?C.amberD:'transparent';
+          const pill=s==='warn'?'pr':s==='watch'?'pa':'pg';
+          const label=s==='warn'?'WARN':s==='watch'?'WATCH':'OK';
+          const bw=Math.min(100,Math.round(psi/0.30*100));
+          return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:${bg};border-radius:7px;margin-bottom:4px">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:10.5px;font-weight:700;color:var(--slate)">${feat}</div>
+              <div style="font-size:8px;color:var(--muted)">${agent}</div>
+            </div>
+            <div style="width:90px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0">
+              <div style="height:100%;width:${bw}%;background:${col};border-radius:3px"></div>
+            </div>
+            <div style="width:28px;font-size:10.5px;font-family:var(--mono);font-weight:800;color:${col};text-align:right;flex-shrink:0">${psi.toFixed(2)}</div>
+            <span class="pill ${pill}" style="font-size:7.5px;width:32px;text-align:center;flex-shrink:0">${label}</span>
+          </div>`;
+        }).join('')}
+        <div style="display:flex;gap:14px;padding-top:8px;border-top:1px solid var(--border);font-size:8px;color:var(--muted)">
+          <span><span style="color:${C.green}">■</span> &lt;0.10 stable</span>
+          <span><span style="color:${C.amber}">■</span> 0.10–0.20 watch</span>
+          <span><span style="color:${C.red}">■</span> &gt;0.20 investigate</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card0">
+      <div style="padding:11px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:12px;font-weight:800;color:var(--navy)">Model Accuracy · Rolling Cohorts</div>
+          <div style="font-size:8.5px;color:var(--muted);margin-top:1px">Borrowers scored 6M ago — outcomes confirmed now</div>
+        </div>
+        <span class="pill pa">Latest below target</span>
+      </div>
+      <table>
+        <thead><tr><th>Scored</th><th>Confirmed</th><th style="text-align:right">Correct ✓</th><th style="text-align:right">Missed ✗</th><th style="text-align:right">Reward</th><th>Status</th></tr></thead>
+        <tbody>${cohortRows.map(({r,rw,sc,st})=>`<tr>
+          <td style="font-family:var(--mono);font-weight:700">${r.scored}</td>
+          <td style="font-family:var(--mono);color:var(--muted)">${r.confirmed}</td>
+          <td style="text-align:right;color:${C.green};font-family:var(--mono)">${r.tp}</td>
+          <td style="text-align:right;color:${C.red};font-family:var(--mono)">${r.fn}</td>
+          <td style="text-align:right;font-family:var(--mono);font-weight:800;color:${sc}">${rw.toFixed(3)}</td>
+          <td style="font-size:9px;font-weight:700;color:${sc}">${st}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card0">
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:12px;font-weight:800;color:var(--navy)">Governance Audit Trail</div>
+      <span class="pill pb">Model v2.4 Active</span>
+    </div>
+    <div style="padding:4px 16px">
+      ${events.map((ev,i)=>`<div style="display:flex;gap:12px;align-items:flex-start;padding:8px 0;${i<events.length-1?'border-bottom:1px solid var(--border)':''}">
+        <span class="pill ${tpill[ev.type]}" style="font-size:7.5px;flex-shrink:0;margin-top:1px;min-width:58px;text-align:center">${tlabel[ev.type]}</span>
+        <span style="font-size:8.5px;color:var(--muted);flex-shrink:0;width:66px">${ev.d}</span>
+        <span style="font-size:10px;color:var(--slate);line-height:1.45">${ev.e}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+function triggerRetrain(){
+  const btn=document.getElementById('retrain-btn');
+  if(btn){btn.textContent='✓ Queued';btn.style.background=C.green;btn.disabled=true;}
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderBorrower();
+</script>
+</body>
+</html>
