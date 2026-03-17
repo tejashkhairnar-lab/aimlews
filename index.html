@@ -297,44 +297,24 @@ const AGENT_DEFS = {
     ],
     categories:[
       {name:'GST Consent Features', key:'gst', type:'range', subScore:40, features:[
-        {name:'GSTR-1 Sales Δ (last 2M)',         val:'−18.4%',  rangeScore:18, weight:25, risk:'high',
-         rangeNote:'> +10% → 80–100 | +2 to +10% → 60–80 | −5 to +2% → 40–60 | −15 to −5% → 15–40 | < −15% → 0–15',
-         brief:'Sales contracting 18.4% in 2M — below −15% distress threshold → low range score'},
-        {name:'ITC Claimed / ITC Available',      val:'0.56',    rangeScore:15, weight:25, risk:'high',
-         rangeNote:'> 0.95 → 80–100 | 0.80–0.95 → 60–80 | 0.65–0.80 → 40–60 | 0.60–0.65 → 20–40 | < 0.60 → 0–20',
-         brief:'ITC claim ratio 0.56 — below 0.60 floor; business not drawing available tax credit (cash stress)'},
-        {name:'GSTR-3B Filed (current)',          val:'Filed',   rangeScore:100, weight:10, risk:'ok',
-         rangeNote:'Filed on time → 100 | Filed with delay → 40–60 | Not filed → 0',
-         brief:'Compliance maintained — GSTR-3B filed on time this period'},
-        {name:'Credit Notes as % of Purchases',   val:'7.2%',    rangeScore:62, weight:15, risk:'med',
-         rangeNote:'< 2% → 85–100 | 2–5% → 65–85 | 5–10% → 45–65 | 10–15% → 20–45 | > 15% → 0–20',
-         brief:'7.2% credit notes — moderate; elevated above typical healthy range but below alarm threshold'},
-        {name:'GSTR-2B Purchase Δ (2M)',          val:'+14.2%',  rangeScore:32, weight:15, risk:'high',
-         rangeNote:'< −5% → 80–100 | −5 to +5% → 60–80 | +5 to +10% → 40–60 | +10 to +15% → 20–40 | > +15% → 0–20',
-         brief:'Purchases rising +14.2% while revenue falls — buying increasing without matching sales recovery'},
-        {name:'GST Balance (18–20th) vs Payable', val:'−₹62K',  rangeScore:8,  weight:10, risk:'high',
-         rangeNote:'> ₹100K buffer → 85–100 | ₹20K–₹100K → 60–85 | ₹0–₹20K → 40–60 | −₹50K to ₹0 → 15–40 | < −₹50K → 0–15',
-         brief:'Negative balance of ₹62K on due-date window — cannot cover GST liability from account'},
+        {name:'GSTR-1 outward sales change',          val:'−18.4',  unit:'% Δ last 2 months',      rangeScore:18, weight:25, risk:'high'},
+        {name:'Input tax credit utilisation ratio',   val:'0.56',   unit:'ITC claimed / available', rangeScore:15, weight:25, risk:'high'},
+        {name:'GSTR-3B filing status',                val:'Filed',  unit:'status',                  rangeScore:100,weight:10, risk:'ok'},
+        {name:'Credit notes raised',                  val:'7.2',    unit:'% of purchases',          rangeScore:62, weight:15, risk:'med'},
+        {name:'GSTR-2B inward purchase change',       val:'+14.2',  unit:'% Δ last 2 months',       rangeScore:32, weight:15, risk:'high'},
+        {name:'GST account balance vs tax payable',   val:'−62',    unit:'INR K on due date',       rangeScore:8,  weight:10, risk:'high'},
       ]},
       {name:'Bank Statement Features', key:'bank', type:'range', subScore:43, features:[
-        {name:'Collection Realization Ratio',     val:'0.74',    rangeScore:24, weight:35, risk:'high',
-         rangeNote:'> 1.05 → 85–100 | 0.90–1.05 → 65–85 | 0.80–0.90 → 45–65 | 0.70–0.80 → 20–45 | < 0.70 → 0–20',
-         brief:'0.74 — only ₹0.74 collected per ₹1 of GST sales; debtors are not paying within credit terms'},
-        {name:'Net Inflow Trend (6M slope)',       val:'−0.12',   rangeScore:12, weight:30, risk:'high',
-         rangeNote:'> +0.15 → 85–100 | +0.05 to +0.15 → 65–85 | −0.05 to +0.05 → 45–65 | −0.10 to −0.05 → 20–45 | < −0.10 → 0–20',
-         brief:'Slope −0.12 — bank inflows consistently contracting month-on-month for 6 months'},
-        {name:'Salary / EPFO Payments (60D)',      val:'Active',  rangeScore:100, weight:15, risk:'ok',
-         rangeNote:'Active → 100 | Partial → 40–70 | Inactive → 0',
-         brief:'Payroll obligations being met — business operational with active workforce'},
-        {name:'Operating Expense Regularity',     val:'82%',     rangeScore:68, weight:20, risk:'ok',
-         rangeNote:'> 92% → 85–100 | 85–92% → 68–85 | 75–85% → 50–68 | 60–75% → 25–50 | < 60% → 0–25',
-         brief:'82% regularity — just below the healthy median band; minor irregularity in periodic payments'},
+        {name:'Collections received vs credit sales',    val:'0.74',  unit:'ratio last 60 days',      rangeScore:24, weight:35, risk:'high'},
+        {name:'Bank inflow trend slope',                 val:'−0.12', unit:'monthly slope 6M',         rangeScore:12, weight:30, risk:'high'},
+        {name:'Salary and EPFO payment status',          val:'Active',unit:'status last 60 days',      rangeScore:100,weight:15, risk:'ok'},
+        {name:'Operating expense payment regularity',    val:'82',    unit:'% of months regular',      rangeScore:68, weight:20, risk:'ok'},
       ]},
       {name:'Bureau Sub-Model', key:'bureau', type:'supervised', subScore:52, features:[
-        {name:'Credit Utilisation Ratio',      val:'72%',      risk:'high', contrib:+14, dir:'lb', brief:'Healthy <40% · At 72%, limits nearly exhausted — heavy credit dependency'},
-        {name:'Unsecured Loan Enquiries (30D)',  val:'2',        risk:'med',  contrib:+9,  dir:'lb', brief:'2 unsecured enquiries in 30 days — fresh borrowing dependency building'},
-        {name:'Latest EMI Δ vs 3M Avg',         val:'+18.4%',   risk:'high', contrib:+12, dir:'lb', brief:'EMI obligations up 18.4% vs 3M avg — new debt burden recently added'},
-        {name:'Latest Enquiry Type',            val:'Unsecured', risk:'high', contrib:+7,  dir:'lb', brief:'Unsecured enquiry pattern — indicative of liquidity gap, not asset acquisition'},
+        {name:'Credit limit utilisation',             val:'72',        unit:'% of sanctioned limits', risk:'high', contrib:+14},
+        {name:'Unsecured loan enquiries',             val:'2',         unit:'count last 30 days',     risk:'med',  contrib:+9},
+        {name:'EMI obligation change',                val:'+18.4',     unit:'% vs 3M average',        risk:'high', contrib:+12},
+        {name:'Latest credit enquiry type',           val:'Unsecured', unit:'type',                   risk:'high', contrib:+7},
       ]},
     ],
     rules:[
@@ -381,7 +361,7 @@ const AGENT_DEFS = {
     icon:'📰', name:'News & Sentiment Agent', color:C.gold, colorD:C.goldD,
     modelType:'Semi-Supervised · NLP Sentiment + Category Weights',
     approach:'semisupervised',
-    description:'NLP model scores each article for sentiment (0–100, higher = more negative). Category weight is user-defined in the admin portal. Agent score = 100 − Σ(category_weight × avg_sentiment / 100).',
+    description:'Each category is scored 0–100 based on NLP sentiment of matched articles (higher score = less negative news). If no articles are found for a category, the feature is marked NA and that category weight is redistributed proportionally to categories with active data.',
     // Category weights — configured in admin portal
     categoryWeights:[
       {category:'Tax Raid / Regulatory Action', weight:30, note:'Regulatory action is a direct credit event — highest weight'},
@@ -394,32 +374,33 @@ const AGENT_DEFS = {
       {
         name:'Sectoral / Industry Risk', weight:25, color:C.amber,
         articles:[
-          {headline:'Textile sector sees 12% demand slowdown in Q3',         date:'Mar 05, 2025', nlpScore:72, source:'Economic Times'},
-          {headline:'Export volumes decline amid global headwinds',            date:'Mar 04, 2025', nlpScore:64, source:'Business Standard'},
-          {headline:'Raw material costs up 8% YoY for manufacturing sector',  date:'Feb 28, 2025', nlpScore:48, source:'Mint'},
+          {headline:'Textile demand slowdown sentiment',    unit:'NLP score', date:'Mar 05, 2025', nlpScore:72, source:'Economic Times'},
+          {headline:'Export volume decline sentiment',      unit:'NLP score', date:'Mar 04, 2025', nlpScore:64, source:'Business Standard'},
+          {headline:'Raw material cost pressure sentiment', unit:'NLP score', date:'Feb 28, 2025', nlpScore:48, source:'Mint'},
         ],
       },
       {
         name:'Management News', weight:20, color:C.blue,
         articles:[
-          {headline:'No abnormal director resignations detected',              date:'Mar 07, 2025', nlpScore:8,  source:'MCA portal'},
-          {headline:'AGM held on schedule — no red flags noted',              date:'Feb 20, 2025', nlpScore:6,  source:'ROC filings'},
-          {headline:'Promoter background check: clean',                        date:'Feb 15, 2025', nlpScore:5,  source:'Bureau check'},
+          {headline:'Director resignation signal',         unit:'NLP score', date:'Mar 07, 2025', nlpScore:8,  source:'MCA portal'},
+          {headline:'AGM outcome sentiment',               unit:'NLP score', date:'Feb 20, 2025', nlpScore:6,  source:'ROC filings'},
+          {headline:'Promoter background check sentiment', unit:'NLP score', date:'Feb 15, 2025', nlpScore:5,  source:'Bureau check'},
         ],
       },
       {
         name:'Tax Raid / Regulatory Action', weight:30, color:C.green,
         articles:[
-          {headline:'No GST or IT department actions detected in last 90D',   date:'Mar 07, 2025', nlpScore:4,  source:'GST portal'},
-          {headline:'No SEBI or RBI notices found for entity or directors',   date:'Mar 06, 2025', nlpScore:3,  source:'SEBI/RBI crawl'},
+          {headline:'GST / IT regulatory action signal',   unit:'NLP score', date:'Mar 07, 2025', nlpScore:4,  source:'GST portal'},
+          {headline:'SEBI / RBI notice signal',            unit:'NLP score', date:'Mar 06, 2025', nlpScore:3,  source:'SEBI/RBI crawl'},
         ],
       },
       {
         name:'Fraud / Malpractice News', weight:25, color:C.green,
         articles:[
-          {headline:'Company not present in RBI defaulter or CIBIL fraud list',date:'Mar 07, 2025', nlpScore:2,  source:'RBI/CIBIL'},
-          {headline:'No fraud or malpractice news in indexed sources',         date:'Mar 05, 2025', nlpScore:4,  source:'News crawl'},
+          {headline:'RBI / CIBIL defaulter list signal',   unit:'NLP score', date:'Mar 07, 2025', nlpScore:2,  source:'RBI/CIBIL'},
+          {headline:'Fraud / malpractice news signal',     unit:'NLP score', date:'Mar 05, 2025', nlpScore:4,  source:'News crawl'},
         ],
+        naDemo:false,
       },
     ],
     eventDate:{label:'Mar 07, 2025', iso:'2025-03-07', note:'Latest article date from daily crawl'},
@@ -441,12 +422,12 @@ const AGENT_DEFS = {
     description:'Monitors court filings, recovery suits, and regulatory notices via automated crawls. Each event type has a configured weight. Score = 100 when no adverse events found; drops when events are detected.',
     categories:[
       {name:'Court & Legal Filings', key:'legal', features:[
-        {name:'Active Court Cases',       val:'0',     weight:18, brief:'Per active civil case detected',              q1:'0',q3:'1',median:'0',pos:5, risk:'ok',  contrib:-5},
-        {name:'Legal Cases Filed L12M',   val:'0',     weight:14, brief:'New filings in last 12 months',              q1:'0',q3:'0',median:'0',pos:5, risk:'ok',  contrib:-3},
-        {name:'Recovery Suits',           val:'None',  weight:22, brief:'Suits filed by bank or creditor',            q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-4},
-        {name:'NCLT / DRT Proceedings',   val:'None',  weight:28, brief:'Insolvency or debt tribunal proceedings',    q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-3},
-        {name:'Regulatory Notice',        val:'None',  weight:16, brief:'Formal GST/IT notice received',             q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-2},
-        {name:'Director Disqualification',val:'None',  weight:24, brief:'Any director flagged in MCA records',       q1:'-',q3:'-',median:'-',pos:5, risk:'ok',  contrib:-2},
+        {name:'Active civil court cases',          val:'0',  unit:'count',      dir:'lb', weight:18, risk:'ok',  rangeScore:100},
+        {name:'New cases filed',                   val:'0',  unit:'count L12M', dir:'lb', weight:14, risk:'ok',  rangeScore:100},
+        {name:'Recovery suits by lender',          val:'0',  unit:'count',      dir:'lb', weight:22, risk:'ok',  rangeScore:100},
+        {name:'NCLT / DRT proceedings',            val:'0',  unit:'count',      dir:'lb', weight:28, risk:'ok',  rangeScore:100},
+        {name:'Regulatory notices received',       val:'0',  unit:'count',      dir:'lb', weight:16, risk:'ok',  rangeScore:100},
+        {name:'Directors with MCA disqualification',val:'0', unit:'count',      dir:'lb', weight:24, risk:'ok',  rangeScore:100},
       ]},
     ],
     eventDate:{label:'Mar 06, 2025', iso:'2025-03-06', note:'Latest court/MCA crawl date'},
@@ -463,26 +444,26 @@ const AGENT_DEFS = {
     description:'Monitors GST, EPFO and statutory filing compliance over a rolling L12M window. Each feature carries a weight. Recency-weighted score — latest month carries highest weight, prior months decay.',
     categories:[
       {name:'GST Compliance — L12M', key:'gst_compliance', features:[
-        {name:'On-Time Filings (GSTR-1 + 3B)',  val:'7 of 12',   weight:20, brief:'Target ≥10/12 · Below median signals filing stress',        q1:'10',q3:'12',median:'11',  pos:28, risk:'med', contrib:+12},
-        {name:'Delayed Filings (1–30 days)',     val:'3 months',  weight:15, brief:'Partial score month · 3 instances this year',               q1:'0', q3:'2', median:'1',   pos:78, risk:'high',contrib:+14},
-        {name:'Missed / Nil Filings',            val:'2 months',  weight:20, brief:'Zero-score months · 2 consecutive is critical',             q1:'0', q3:'0', median:'0',   pos:95, risk:'high',contrib:+18},
-        {name:'Recency-Weighted Score',          val:'62/100',    weight:15, brief:'Latest month weight 2× · Decays 0.15/month prior',          q1:'80',q3:'100',median:'92', pos:18, risk:'high',contrib:+16},
-        {name:'Latest Month Status',             val:'Delayed',   weight:10, brief:'Single latest month snapshot · High recency weight',        q1:'-', q3:'-', median:'-',   pos:40, risk:'med', contrib:+8},
-        {name:'Late/Missed Streak',              val:'2 months',  weight:10, brief:'Consecutive streak above 1 = heightened concern',           q1:'0', q3:'1', median:'0',   pos:85, risk:'high',contrib:+11},
+        {name:'On-time GSTR-1 + 3B filings',       val:'7',       unit:'of 12 months', dir:'hb', weight:20, risk:'med',  rangeScore:52},
+        {name:'Delayed filings (1–30 days late)',   val:'3',       unit:'months L12M',  dir:'lb', weight:15, risk:'high', rangeScore:18},
+        {name:'Missed / nil filings',               val:'2',       unit:'months L12M',  dir:'lb', weight:20, risk:'high', rangeScore:8},
+        {name:'Recency-weighted filing score',      val:'62',      unit:'score 0–100',  dir:'hb', weight:15, risk:'high', rangeScore:62},
+        {name:'Latest month filing status',         val:'Delayed', unit:'status',       dir:'hb', weight:10, risk:'med',  rangeScore:40},
+        {name:'Consecutive late / missed streak',   val:'2',       unit:'months',       dir:'lb', weight:10, risk:'high', rangeScore:12},
       ]},
       {name:'EPFO Compliance — L12M', key:'epfo_compliance', features:[
-        {name:'On-Time ECR Filings',             val:'9 of 12',   weight:10, brief:'Target ≥10/12 · ECR = monthly PF remittance',               q1:'10',q3:'12',median:'12',  pos:38, risk:'med', contrib:+8},
-        {name:'Delayed ECR Filings',             val:'2 months',  weight:8,  brief:'Late remittances signal cash flow pressure',                 q1:'0', q3:'1', median:'0',   pos:80, risk:'high',contrib:+10},
-        {name:'Missed / Nil ECR',                val:'1 month',   weight:10, brief:'Non-filing indicates workforce or cash stress',              q1:'0', q3:'0', median:'0',   pos:90, risk:'high',contrib:+12},
-        {name:'Recency-Weighted EPFO Score',     val:'74/100',    weight:8,  brief:'Same decay model as GST · Recent months weight higher',     q1:'85',q3:'100',median:'96', pos:22, risk:'med', contrib:+9},
-        {name:'Headcount Trend (L6M)',           val:'−8 staff',  weight:8,  brief:'Sustained headcount drop may indicate business contraction', q1:'-5',q3:'+10',median:'+2',pos:20, risk:'med', contrib:+6},
-        {name:'Latest ECR Status',               val:'On time',   weight:5,  brief:'Most recent month filed on time',                           q1:'-', q3:'-', median:'-',   pos:10, risk:'ok', contrib:-3},
+        {name:'On-time ECR filings',               val:'9',       unit:'of 12 months', dir:'hb', weight:10, risk:'med',  rangeScore:68},
+        {name:'Delayed ECR filings',               val:'2',       unit:'months L12M',  dir:'lb', weight:8,  risk:'high', rangeScore:15},
+        {name:'Missed / nil ECR filings',          val:'1',       unit:'month L12M',   dir:'lb', weight:10, risk:'high', rangeScore:22},
+        {name:'Recency-weighted EPFO score',       val:'74',      unit:'score 0–100',  dir:'hb', weight:8,  risk:'med',  rangeScore:74},
+        {name:'Headcount change',                  val:'−8',      unit:'staff Δ L6M',  dir:'hb', weight:8,  risk:'med',  rangeScore:38},
+        {name:'Latest month ECR status',           val:'On time', unit:'status',       dir:'hb', weight:5,  risk:'ok',   rangeScore:100},
       ]},
       {name:'Other Statutory', key:'other_compliance', features:[
-        {name:'MCA Annual Filing (ROC)',          val:'Up to date',weight:5,  brief:'Annual return filed with ROC — no penalty',                 q1:'-',q3:'-',median:'-',pos:5,  risk:'ok', contrib:-2},
-        {name:'Income Tax Return',               val:'Filed',     weight:5,  brief:'AY 24-25 filed — no outstanding demand',                    q1:'-',q3:'-',median:'-',pos:5,  risk:'ok', contrib:-2},
-        {name:'TDS Returns (26Q / 24Q)',          val:'Delayed 1Q',weight:4,  brief:'1 quarter delayed — low weight but noted',                  q1:'-',q3:'-',median:'-',pos:55, risk:'med', contrib:+5},
-        {name:'Professional Tax',                val:'Compliant', weight:2,  brief:'State professional tax compliant',                          q1:'-',q3:'-',median:'-',pos:5,  risk:'ok', contrib:-1},
+        {name:'MCA annual filing status',          val:'Filed',       unit:'status',     dir:'hb', weight:5, risk:'ok',  rangeScore:100},
+        {name:'Income tax return status',          val:'Filed',       unit:'status',     dir:'hb', weight:5, risk:'ok',  rangeScore:100},
+        {name:'TDS return quarters delayed',       val:'1',           unit:'qtrs L12M',  dir:'lb', weight:4, risk:'med', rangeScore:52},
+        {name:'Professional tax status',          val:'Compliant',   unit:'status',     dir:'hb', weight:2, risk:'ok',  rangeScore:100},
       ]},
     ],
     eventDate:{label:'Feb 2025 (GSTR-3B)', iso:'2025-02-20', note:'Latest GST filing event date'},
@@ -499,29 +480,15 @@ const AGENT_DEFS = {
     description:'Monitors management stability, promoter behaviour, and leadership quality. Combines event-driven signals (resignations, pledges, ownership changes) with qualitative scores (experience, qualification). Score = 100 when no adverse signals; drops on detected events or low qualitative scores.',
     categories:[
       {name:'Stability Signals', key:'mgmt_stability', features:[
-        {name:'Director Resignations (L12M)',   val:'2 resigned', weight:28, risk:'high',
-         brief:'2 resignations in 12M — management churn is a leading distress indicator',
-         rangeNote:'0 → 90–100 | 1 → 55–75 | 2 → 25–50 | 3+ → 0–20', rangeScore:32},
-        {name:'Promoter Pledge %',              val:'48%',         weight:24, risk:'high',
-         brief:'48% of stake pledged — high pledge signals promoter liquidity stress',
-         rangeNote:'0% → 90–100 | <15% → 70–85 | 15–35% → 45–65 | 35–50% → 20–40 | >50% → 0–20', rangeScore:28},
-        {name:'Promoter Shareholding Δ (6M)',   val:'−6.2pp',      weight:18, risk:'high',
-         brief:'Stake reduced 6.2pp in 6M — dilution may signal exit intent or pledge invocation',
-         rangeNote:'Increase → 80–100 | ±1pp → 65–80 | −1 to −3pp → 40–60 | −3 to −7pp → 15–38 | >−7pp → 0–15', rangeScore:25},
-        {name:'Board Meeting Attendance',       val:'72%',         weight:10, risk:'med',
-         brief:'Below 75% — low attendance may reflect disengagement or internal disputes',
-         rangeNote:'>90% → 85–100 | 75–90% → 60–80 | 60–75% → 35–58 | <60% → 0–30', rangeScore:52},
+        {name:'Director resignations',         val:'2',    unit:'count L12M',    dir:'lb', weight:28, risk:'high', rangeScore:32},
+        {name:'Promoter stake pledged',        val:'48',   unit:'% of holding',  dir:'lb', weight:24, risk:'high', rangeScore:28},
+        {name:'Promoter shareholding change',  val:'−6.2', unit:'pp Δ 6M',       dir:'hb', weight:18, risk:'high', rangeScore:25},
+        {name:'Board meeting attendance rate', val:'72',   unit:'% L12M',        dir:'hb', weight:10, risk:'med',  rangeScore:52},
       ]},
       {name:'Leadership Quality', key:'mgmt_quality', features:[
-        {name:'Sector Experience (MD / Promoter)',val:'6 yrs',      weight:12, risk:'med',
-         brief:'Below 10-year benchmark — moderate experience base for MSME lending comfort',
-         rangeNote:'>15 yrs → 85–100 | 10–15 yrs → 65–85 | 5–10 yrs → 40–62 | <5 yrs → 0–35', rangeScore:48},
-        {name:'Qualification Relevance',         val:'Moderate',   weight:5,  risk:'med',
-         brief:'Qualifications partially relevant to business domain — assessed via MCA/LinkedIn check',
-         rangeNote:'Highly relevant → 80–100 | Moderate → 45–70 | Low relevance → 0–40', rangeScore:55},
-        {name:'Key-Man / Succession Risk',       val:'High',       weight:3,  risk:'high',
-         brief:'Single promoter-director running operations — no visible second-line management',
-         rangeNote:'Low risk → 80–100 | Moderate → 40–70 | High → 0–35', rangeScore:22},
+        {name:'MD / promoter sector experience', val:'6',        unit:'years',           dir:'hb', weight:12, risk:'med',  rangeScore:48},
+        {name:'Qualification relevance score',   val:'55',       unit:'score 0–100',     dir:'hb', weight:5,  risk:'med',  rangeScore:55},
+        {name:'Key-person dependency risk',      val:'High',     unit:'Low/Med/High',    dir:'lb', weight:3,  risk:'high', rangeScore:22},
       ]},
     ],
     eventDate:{label:'Mar 06, 2025', iso:'2025-03-06', note:'MCA director data + shareholding crawl'},
@@ -593,6 +560,26 @@ const BORROWERS=[
   },
   {id:'BL-2931',name:'GreenFields Agro Exports',sector:'Agriculture & Food',loan:'₹1.2 Cr',product:'Kisan MSME Loan',vintage:'18M',rm:'Kavitha Rao',score:72,
    agentScores:{financial:78,behavioural:82,consent:76,news:85,legal:90,compliance:82,management:79},
+   newsNADemo:[
+     {name:'Sectoral / Industry Risk', weight:25, articles:[]},
+     {name:'Management News', weight:20, articles:[
+       {headline:'Management stability signal',   unit:'NLP score 0-100', date:'Mar 07, 2025', nlpScore:6, source:'MCA portal'},
+     ]},
+     {name:'Tax Raid / Regulatory Action', weight:30, articles:[
+       {headline:'Regulatory action signal',      unit:'NLP score 0-100', date:'Mar 07, 2025', nlpScore:3, source:'GST portal'},
+     ]},
+     {name:'Fraud / Malpractice News', weight:25, articles:[]},
+   ],
+   newsNADemo:[
+     {name:'Sectoral / Industry Risk', weight:25, articles:[]},
+     {name:'Management News', weight:20, articles:[
+       {headline:'Management stability signal',   unit:'NLP score 0–100', date:'Mar 07, 2025', nlpScore:6, source:'MCA portal'},
+     ]},
+     {name:'Tax Raid / Regulatory Action', weight:30, articles:[
+       {headline:'Regulatory action signal',      unit:'NLP score 0–100', date:'Mar 07, 2025', nlpScore:3, source:'GST portal'},
+     ]},
+     {name:'Fraud / Malpractice News', weight:25, articles:[]},
+   ],
    scoreHistory:{
     monthly:[
       {m:'Mar-22',c:38,ev:true,t:'FY2020-21 audited'},{m:'Apr-22',c:38},{m:'May-22',c:39},{m:'Jun-22',c:40,ev:true,t:'Q1 CBS'},{m:'Jul-22',c:41},{m:'Aug-22',c:42},{m:'Sep-22',c:43,ev:true,t:'Q2 CBS'},{m:'Oct-22',c:43},{m:'Nov-22',c:44},{m:'Dec-22',c:45,ev:true,t:'Q3 CBS'},{m:'Jan-23',c:46},{m:'Feb-23',c:47},
@@ -771,50 +758,113 @@ function toggleCat(key){
   renderDrillPanel(selectedAgent);
 }
 
-function buildIQR(f, accentColor){
-  const col = sC(f.risk);
-  const pos = Math.max(2, Math.min(97, f.pos));
-  return `<div style="margin:6px 0 2px">
-    <div style="position:relative;height:8px;background:var(--hi2);border-radius:4px;border:1px solid var(--border)">
-      <div style="position:absolute;left:25%;right:25%;top:0;bottom:0;background:${accentColor}18;border-radius:3px"></div>
-      <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:${accentColor}44;transform:translateX(-50%)"></div>
-      <div style="position:absolute;left:${pos}%;top:-3px;width:4px;height:14px;border-radius:2px;background:${col};transform:translateX(-50%);box-shadow:0 0 4px ${col}88"></div>
+// ══════════════════════════════════════════
+// UNIVERSAL FEATURE VIEW
+// Same structure for every agent.
+// Category header: name | contribution % | score | bar
+// Feature row: name | unit | value | direction badge
+// ══════════════════════════════════════════
+
+// Compute category score from available data; returns null when all features are NA
+function catScore(cat){
+  const f=cat.features||[];
+  if(cat.subScore!=null) return cat.subScore;
+  const active=f.filter(x=>x.val!=='NA');
+  if(active.length===0) return null; // NA category
+  if(active.every(x=>x.rangeScore!=null)){
+    const tw=active.reduce((s,x)=>s+(x.weight||1),0)||1;
+    return Math.round(active.reduce((s,x)=>s+(x.rangeScore||0)*(x.weight||1),0)/tw);
+  }
+  const rMap={ok:90,med:50,high:12};
+  const tw=active.reduce((s,x)=>s+(x.weight||1),0)||1;
+  return Math.round(active.reduce((s,x)=>s+(rMap[x.risk]||50)*(x.weight||1),0)/tw);
+}
+
+// Parse name → cleanName + unit  e.g. "Revenue (₹ Cr TTM)" → ["Revenue","₹ Cr TTM"]
+function parseName(f){
+  const m=f.name.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  return [m?m[1].trim():f.name, f.unit||(m?m[2]:'')];
+}
+
+// One category section: collapsible header + feature rows
+// Feature row: name · unit (muted mono) · value (coloured) — same for every agent
+function renderCatSection(cat, color, contribPct, isOpen){
+  const cs  = catScore(cat);  // null = NA (no data)
+  const csC = cs==null?C.muted:cs>=65?C.green:cs>=35?C.amber:C.red;
+  const feats = cat.features||[];
+
+  const featRows = feats.map(f=>{
+    const [name,unit] = parseName(f);
+    const vc = f.val==='NA' ? C.muted : sC(f.risk);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <span style="font-size:10px;font-weight:600;color:var(--navy)">${name}</span>
+        ${unit?`<span style="font-size:8px;color:var(--muted);font-family:var(--mono);margin-left:6px">${unit}</span>`:'<span style="font-size:8px;color:var(--red);font-family:var(--mono);margin-left:6px">no unit</span>'}
+      </div>
+      <div style="font-size:15px;font-weight:900;color:${vc};font-family:var(--mono);flex-shrink:0">${f.val}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="cat-section" style="border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:${isOpen?color+'0D':'var(--hi)'};cursor:pointer" onclick="toggleCat('${cat.key}')">
+      <div style="flex:1;min-width:0">
+        <span style="font-size:10.5px;font-weight:800;color:${isOpen?color:'var(--navy)'}">${cat.name}</span>
+        <span style="font-size:8.5px;color:var(--muted);margin-left:6px">${feats.length} features</span>
+      </div>
+      ${contribPct!=null?`<span style="font-size:8.5px;color:var(--muted);font-family:var(--mono)">contribution ${contribPct}%</span>`:''}
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:16px;font-weight:900;color:${csC};font-family:var(--mono);line-height:1">${cs!=null?cs:'NA'}</div>
+        <div style="font-size:7px;color:var(--muted)">${cs!=null?'score':'no data'}</div>
+      </div>
+      <div style="width:36px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0">
+        <div style="height:100%;width:${cs!=null?cs:0}%;background:${csC};border-radius:2px"></div>
+      </div>
+      <span style="font-size:9px;color:var(--muted);transform:rotate(${isOpen?180:0}deg);display:inline-block">v</span>
     </div>
-    <div style="display:flex;justify-content:space-between;margin-top:2px">
-      <span style="font-size:7px;color:var(--muted);font-family:var(--mono)">${f.q1}</span>
-      <span style="font-size:7px;color:var(--muted);font-family:var(--mono)">${f.median}</span>
-      <span style="font-size:7px;color:var(--muted);font-family:var(--mono)">${f.q3}</span>
+    <div style="display:${isOpen?'block':'none'}">
+      ${featRows}
     </div>
   </div>`;
 }
 
-function renderFeatures(features, color, agentScore){
-  return `<div style="display:flex;flex-direction:column;gap:6px;padding:4px 0">
-    ${features.map(f=>{
-      const vc    = sC(f.risk);
-      const isHB  = f.dir !== 'lb';
-      const dirC  = isHB ? C.blue : C.teal;
-      const dirTx = isHB ? '↑ higher is better' : '↓ lower is better';
-      const hasIQR = f.q1 && f.q1 !== '-';
-      // extract unit from parentheses in name e.g. "Revenue (₹ Cr TTM)" → name="Revenue", unit="₹ Cr TTM"
-      const nameMatch = f.name.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
-      const cleanName = nameMatch ? nameMatch[1].trim() : f.name;
-      const unit      = f.unit || (nameMatch ? nameMatch[2] : '');
-      return `<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 12px">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:${hasIQR?5:0}px">
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--navy);line-height:1.3">${cleanName}</div>
-            <div style="display:flex;align-items:center;gap:5px;margin-top:3px">
-              ${unit?`<span style="font-size:8px;color:var(--muted);font-family:var(--mono)">${unit}</span><span style="font-size:8px;color:var(--border)">·</span>`:''}
-              <span style="font-size:8px;font-weight:600;color:${dirC}">${dirTx}</span>
-            </div>
-          </div>
-          <div style="font-size:16px;font-weight:900;color:${vc};font-family:var(--mono);line-height:1;flex-shrink:0">${f.val}</div>
-        </div>
-        ${hasIQR ? buildIQR(f, color) : ''}
-      </div>`;
-    }).join('')}
-  </div>`;
+// Compute contribution % per category relative to agent
+function catContribPct(def, cat){
+  const allWt=(def.categories||[]).reduce((s,c)=>{
+    if(c.type==='supervised') return s+25; // bureau fixed
+    return s+c.features.reduce((fs,f)=>fs+(f.weight||0),0);
+  },0)||1;
+  const thisWt=cat.type==='supervised'?25:cat.features.reduce((s,f)=>s+(f.weight||0),0);
+  return Math.round(thisWt/allWt*100);
+}
+
+// Thin compat wrappers (keep calls from old code working)
+function buildIQR(f,c){ return ''; }
+function renderFeatures(features,color,agentScore){ return ''; }
+function renderBureauFeatures(features,color){ return ''; }
+function renderRangeFeatures(features,color,s){ return ''; }
+function renderMgmtFeatures(features,color){ return ''; }
+function renderNonMLCategory(cat,color,wt){ return renderCatSection(cat,color,wt,true); }
+function buildCatSection(cat,color,isOpen,agentScore){
+  return renderCatSection(cat,color,null,isOpen);
+}
+
+// News: map newsCategories into standard renderCatSection format
+function renderNewsCategories(def){
+  return def.newsCategories.map((cat,i)=>{
+    const avgSentiment=Math.round(cat.articles.reduce((s,a)=>s+a.nlpScore,0)/cat.articles.length);
+    const synCat={
+      name:cat.name, key:'news_'+i,
+      subScore:100-avgSentiment,
+      features:cat.articles.map(a=>({
+        name:a.headline,
+        unit:a.source,
+        val:a.nlpScore+'/100',
+        risk:a.nlpScore>60?'high':a.nlpScore>35?'med':'ok',
+      }))
+    };
+    const isOpen=openCats[synCat.key]!==false;
+    return renderCatSection(synCat, C.gold, cat.weight, isOpen);
+  }).join('');
 }
 
 // ══════════════════════════════════════════
@@ -843,97 +893,6 @@ function renderConsentFlow(def){
       <div style="font-size:18px;font-weight:900;color:${rC(ss.final)};font-family:var(--mono);line-height:1">${ss.final}</div>
       <div style="font-size:7px;color:var(--muted);margin-top:2px">final</div>
     </div>
-  </div>`;
-}
-
-// ══════════════════════════════════════════
-// MANAGEMENT FEATURE RENDERER (simple blocks)
-// ══════════════════════════════════════════
-function renderMgmtFeatures(features, color){
-  return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0">
-    ${features.map(f=>{
-      const sc  = f.rangeScore;
-      const scC = sc>=70?C.green:sc>=40?C.amber:C.red;
-      return `<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;border-top:3px solid ${scC}">
-        <div style="font-size:9.5px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.3">${f.name}</div>
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:6px;margin-bottom:8px">
-          <div style="font-size:15px;font-weight:900;color:${sC(f.risk)};font-family:var(--mono);line-height:1">${f.val}</div>
-          <div style="font-size:7.5px;color:var(--muted);background:var(--hi2);border-radius:3px;padding:1px 6px;flex-shrink:0">wt ${f.weight}%</div>
-        </div>
-        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
-          <div style="height:100%;width:${sc}%;background:${scC};border-radius:2px"></div>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>`;
-}
-
-
-function renderRangeFeatures(features, color, subScore){
-  return `<div style="display:flex;flex-direction:column;gap:6px;padding:2px 0">
-    ${features.map(f=>{
-      const sc  = f.rangeScore;
-      const scC = sc>=70?C.green:sc>=40?C.amber:C.red;
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border-radius:8px;border:1px solid var(--border);border-left:3px solid ${scC}">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:2px">${f.name}</div>
-          <div style="font-size:8px;color:var(--muted)">${f.brief}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0;min-width:80px">
-          <div style="font-size:13px;font-weight:900;color:${sC(f.risk)};font-family:var(--mono)">${f.val}</div>
-          <div style="display:flex;align-items:center;gap:4px;margin-top:3px;justify-content:flex-end">
-            <div style="width:50px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
-              <div style="height:100%;width:${sc}%;background:${scC};border-radius:2px"></div>
-            </div>
-            <span style="font-size:8px;font-weight:800;color:${scC};font-family:var(--mono)">${sc}</span>
-          </div>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>`;
-}
-function renderNewsCategories(def){
-  const cats = def.newsCategories.map(cat=>{
-    const catSentiment = Math.round(cat.articles.reduce((s,a)=>s+a.nlpScore,0) / cat.articles.length);
-    return {...cat, catSentiment};
-  });
-
-  return cats.map(cat=>{
-    const sentCol = cat.catSentiment>60?C.red:cat.catSentiment>35?C.amber:C.green;
-    const pill    = cat.catSentiment>60?'pr':cat.catSentiment>35?'pa':'pg';
-    return `<div class="news-cat">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:3px;height:22px;background:${cat.color};border-radius:2px;flex-shrink:0"></div>
-          <div>
-            <div style="font-size:10.5px;font-weight:800;color:${cat.color}">${cat.name}</div>
-            <div style="font-size:8px;color:var(--muted)">Weight: <strong style="color:var(--navy)">${cat.weight}%</strong> &nbsp;·&nbsp; NLP avg: <strong style="color:${sentCol}">${cat.catSentiment}/100</strong></div>
-          </div>
-        </div>
-        <span class="pill ${pill}">${cat.catSentiment>60?'HIGH RISK':cat.catSentiment>35?'MODERATE':'LOW'}</span>
-      </div>
-      ${cat.articles.map(a=>`<div style="font-size:9px;color:var(--slate);padding:3px 7px;border-left:2px solid ${cat.color}55;margin-bottom:2px">${a.headline} <span style="color:var(--muted)">· ${a.source}</span></div>`).join('')}
-    </div>`;
-  }).join('');
-}
-
-
-// ══════════════════════════════════════════
-// BUREAU FEATURE RENDERER (supervised, no peer IQR)
-// ══════════════════════════════════════════
-function renderBureauFeatures(features, color){
-  return `<div style="display:flex;flex-direction:column;gap:6px;padding:2px 0">
-    ${features.map(f=>{
-      const isRisk = (f.contrib||0) > 0;
-      const cc = isRisk ? C.red : C.green;
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border-radius:8px;border:1px solid var(--border);border-left:3px solid ${cc}">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:2px">${f.name}</div>
-          <div style="font-size:8px;color:var(--muted)">${f.brief}</div>
-        </div>
-        <div style="font-size:13px;font-weight:900;color:${sC(f.risk)};font-family:var(--mono);flex-shrink:0">${f.val}</div>
-      </div>`;
-    }).join('')}
   </div>`;
 }
 
@@ -1014,13 +973,19 @@ function renderMgmtRules(def){
 // BUILD CATEGORY SECTION
 // ══════════════════════════════════════════
 function buildCatSection(cat, color, isOpen, agentScore){
+  const catTotal=Math.abs((cat.features||[]).reduce((s,f)=>s+(f.contrib||0),0));
+  const catIsRisk=(cat.features||[]).some(f=>(f.contrib||0)>0);
+  const cCol=catIsRisk?C.red:C.green;
   return `<div class="cat-section">
     <div class="cat-header" onclick="toggleCat('${cat.key}')" style="${isOpen?'background:var(--hi2)':''}">
-      <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
         <span style="font-size:11px;font-weight:800;color:${isOpen?color:'var(--white)'};">${cat.name}</span>
         <span style="font-size:9px;color:var(--muted)">${cat.features.length} features</span>
       </div>
-      <span style="font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:9px;font-weight:800;color:${cCol};font-family:var(--mono)">${catIsRisk?'−':'+'}${catTotal} pts</span>
+        <span style="font-size:10px;color:var(--muted);display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>
+      </div>
     </div>
     <div style="display:${isOpen?'block':'none'}">
       <div class="cat-body" style="padding:10px 12px 14px">${renderFeatures(cat.features, color, agentScore)}</div>
@@ -1035,43 +1000,25 @@ function buildCatSection(cat, color, isOpen, agentScore){
 // WEIGHT TABLE — shown for rule-based & semi-supervised agents
 // ══════════════════════════════════════════
 function renderWeightTable(def){
-  // Unsupervised agents (legal, compliance): feature list grouped by category
+  // Unsupervised agents (legal, compliance): universal event card per category
   if(def.approach==='unsupervised'){
     const col=def.color;
-    const allFeats=[];
-    (def.categories||[]).forEach(cat=>
-      (cat.features||[]).forEach(f=>allFeats.push({...f, catName:cat.name}))
-    );
-    const maxW=Math.max(...allFeats.map(f=>f.weight||0),1);
-    // Group by catName
     const groups=[];
     (def.categories||[]).forEach(cat=>{
-      if((cat.features||[]).length) groups.push({name:cat.name, features:cat.features});
+      if((cat.features||[]).length) groups.push({name:cat.name, key:cat.key, features:cat.features});
     });
     return `<div style="display:flex;flex-direction:column;gap:10px">
-      ${groups.map(g=>`
-        <div>
-          <div style="font-size:9px;font-weight:800;color:${col};text-transform:uppercase;letter-spacing:.07em;padding:0 2px;margin-bottom:5px">${g.name}</div>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            ${g.features.map(f=>{
-              const riskCol=f.risk==='high'?C.red:f.risk==='med'?C.amber:C.green;
-              const w=f.weight||0;
-              return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:#fff;border-radius:7px;border:1px solid var(--border);border-left:3px solid ${riskCol}">
-                <div style="flex:1;min-width:0">
-                  <div style="font-size:9.5px;font-weight:600;color:var(--slate)">${f.name}</div>
-                  <div style="font-size:8px;color:var(--muted);margin-top:1px">${f.brief||''}</div>
-                </div>
-                <div style="font-size:10.5px;font-weight:800;color:${riskCol};font-family:var(--mono);width:52px;text-align:right;flex-shrink:0">${f.val}</div>
-                <div style="width:72px;flex-shrink:0">
-                  <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:2px">
-                    <div style="height:100%;width:${Math.round(w/maxW*100)}%;background:${col};border-radius:2px"></div>
-                  </div>
-                  <div style="font-size:8px;font-weight:800;color:${col};text-align:right;font-family:var(--mono)">wt: ${w}</div>
-                </div>
-              </div>`;
-            }).join('')}
+      ${groups.map(g=>{
+        const catTotal=g.features.reduce((s,f)=>s+Math.abs(f.contrib||0),0);
+        const hasRisk=g.features.some(f=>(f.contrib||0)>0);
+        return `<div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:5px">
+            <div style="font-size:9px;font-weight:800;color:${col};text-transform:uppercase;letter-spacing:.07em">${g.name}</div>
+            <div style="font-size:8px;color:${hasRisk?C.red:C.green};font-family:var(--mono);font-weight:700">${hasRisk?'−':'+'} ${catTotal} pts to agent</div>
           </div>
-        </div>`).join('')}
+          ${renderUniversalFeatures(g.features,'event',col)}
+        </div>`;
+      }).join('')}
     </div>`;
   }
 
@@ -1122,83 +1069,32 @@ function renderDrillPanel(agentKey){
   const modelLabel={supervised:'Supervised ML',semisupervised:'Semi-Supervised',rulebased:'Rule-Based',unsupervised:'Unsupervised'}[def.approach]||'Unsupervised';
 
   let catHTML='';
-  const weightTableHTML=(def.approach==='semisupervised'&&agentKey!=='consent'||def.approach==='unsupervised')?renderWeightTable(def):'';
+  const weightTableHTML='';
 
-  if(def.approach==='semisupervised'&&agentKey==='consent'){
-    // Architecture flow card first
-    catHTML += renderConsentFlow(def);
-
-    def.categories.forEach(cat=>{
-      const isOpen = openCats[cat.key] !== false;
-      const chevron = `<span style="font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>`;
-      const typeTag = cat.type==='supervised'
-        ? `<span style="font-size:7.5px;font-weight:700;color:${C.purple};background:${C.purpleD};border-radius:3px;padding:1px 5px">Supervised ML</span>`
-        : `<span style="font-size:7.5px;font-weight:700;color:${C.teal};background:${C.tealD};border-radius:3px;padding:1px 5px">Range-Based</span>`;
-      const subScoreChip = cat.subScore!=null
-        ? `<span style="font-size:8px;color:var(--muted)">sub-score: <strong style="color:${rC(cat.subScore)};font-family:var(--mono)">${cat.subScore}</strong></span>`
-        : '';
-
-      const inner = cat.type==='range'
-        ? renderRangeFeatures(cat.features, def.color, cat.subScore)
-        : cat.type==='supervised'
-          ? renderBureauFeatures(cat.features, def.color)
-          : renderFeatures(cat.features, def.color, agScore);
-
-      catHTML += `<div class="cat-section">
-        <div class="cat-header" onclick="toggleCat('${cat.key}')" style="${isOpen?'background:var(--hi2)':''}">
-          <div style="display:flex;align-items:center;gap:8px">
-            ${typeTag}
-            <span style="font-size:11px;font-weight:800;color:${isOpen?def.color:'var(--white)'}">${cat.name}</span>
-            <span style="font-size:9px;color:var(--muted)">${cat.features.length} features</span>
-            ${subScoreChip}
-          </div>
-          ${chevron}
-        </div>
-        <div style="display:${isOpen?'block':'none'}">
-          <div class="cat-body" style="padding:10px 12px 14px">${inner}</div>
-        </div>
-      </div>`;
-    });
-
-    // Triangulation rules
-    catHTML += `<div class="cat-section">
-      <div class="cat-header" style="background:var(--hi2)">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:7.5px;font-weight:700;color:${C.red};background:${C.redD};border-radius:3px;padding:1px 5px">Score Overlay</span>
-          <span style="font-size:11px;font-weight:800;color:var(--navy)">Combination Rules · ${def.rules.filter(r=>r.triggered).length} of ${def.rules.length} Triggered</span>
-        </div>
-      </div>
-      <div class="cat-body" style="background:var(--panel)">${renderConsentRules(def)}</div>
-    </div>`;
-  } else if(agentKey==='news'){
-    catHTML=`<div style="padding:2px 0">${renderNewsCategories(def)}</div>`;
-  } else if(def.approach==='unsupervised'){
-    // management has categories with rangeScore features — render them
-    if(agentKey==='management'){
-      (def.categories||[]).forEach(cat=>{
-        const isOpen=openCats[cat.key]!==false;
-        const chevron=`<span style="font-size:10px;color:var(--muted);display:inline-block;transform:rotate(${isOpen?180:0}deg)">▼</span>`;
-        catHTML+=`<div class="cat-section">
-          <div class="cat-header" onclick="toggleCat('${cat.key}')" style="${isOpen?'background:var(--hi2)':''}">
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-size:11px;font-weight:800;color:${isOpen?def.color:'var(--white)'}">${cat.name}</span>
-              <span style="font-size:9px;color:var(--muted)">${cat.features.length} signals</span>
-            </div>${chevron}
-          </div>
-          <div style="display:${isOpen?'block':'none'}">
-            <div class="cat-body" style="padding:10px 12px 14px">${renderMgmtFeatures(cat.features, def.color)}</div>
-          </div>
-        </div>`;
-      });
-    } else {
-      catHTML='';
-    }
-  } else if(def.approach==='rulebased'&&agentKey==='_management_disabled'){
-    catHTML+=`<div style="padding:14px 16px">${renderMgmtRules(def)}</div>`;
-  } else {
+  if(agentKey==='consent'){
+    const subWts={gst:40, bank:35, bureau:25};
     (def.categories||[]).forEach(cat=>{
       const isOpen=openCats[cat.key]!==false;
-      catHTML+=buildCatSection(cat, def.color, isOpen, agScore);
+      catHTML += renderCatSection(cat, def.color, subWts[cat.key]||null, isOpen);
+    });
+    catHTML += `<div class="cat-section" style="border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:8px">
+      <div style="padding:9px 14px;background:${C.redD};display:flex;align-items:center;gap:8px">
+        <span style="font-size:8px;font-weight:700;color:${C.red};background:${C.red}22;border-radius:3px;padding:1px 6px">Score Overlay</span>
+        <span style="font-size:10.5px;font-weight:800;color:${C.red}">Combination Rules · ${def.rules.filter(r=>r.triggered).length} of ${def.rules.length} Triggered</span>
+      </div>
+      <div style="background:var(--panel)">${renderConsentRules(def)}</div>
+    </div>`;
+  } else if(agentKey==='news'){
+    catHTML = renderNewsCategories(def);
+  } else {
+    // All other agents (Financial, Behavioural, Legal, Compliance, Management)
+    // Compute contribution % per category
+    const allFeatWt=(def.categories||[]).reduce((s,cat)=>s+cat.features.reduce((fs,f)=>fs+(f.weight||1),0),0)||1;
+    (def.categories||[]).forEach(cat=>{
+      const isOpen=openCats[cat.key]!==false;
+      const thisWt=cat.features.reduce((s,f)=>s+(f.weight||1),0);
+      const contrib=Math.round(thisWt/allFeatWt*100);
+      catHTML += renderCatSection(cat, def.color, contrib, isOpen);
     });
   }
 
